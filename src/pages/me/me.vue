@@ -95,33 +95,33 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import Mptoast from 'mptoast'
-import {mapGetters, mapMutations} from 'vuex'
+import Mptoast from "mptoast";
+import { mapGetters, mapMutations } from "vuex";
 
 export default {
-  data () {
+  data() {
     return {
       perId: 0
-    }
+    };
   },
   components: {
     Mptoast
   },
   methods: {
     ...mapMutations({
-      setNickName: 'SET_NICKNAME',
-      setAvatarUrl: 'SET_AVATARURL',
-      setCanIUse: 'SET_CANIUSE'
+      setNickName: "SET_NICKNAME",
+      setAvatarUrl: "SET_AVATARURL",
+      setCanIUse: "SET_CANIUSE"
     }),
-    bindGetUserInfo (e) {
+    bindGetUserInfo(e) {
       if (e.mp.detail.userInfo) {
-        this.setNickName(e.mp.detail.userInfo.nickName)
-        this.setAvatarUrl(e.mp.detail.userInfo.avatarUrl)
-        this.setCanIUse(false)
+        this.setNickName(e.mp.detail.userInfo.nickName);
+        this.setAvatarUrl(e.mp.detail.userInfo.avatarUrl);
+        this.setCanIUse(false);
       }
     },
-    toOrder (type) {
-      wx.navigateTo({url: `../orders/main?id=${this.perId}&type=${type}`})
+    toOrder(type) {
+      wx.navigateTo({ url: `../orders/main?id=${this.perId}&type=${type}` });
     }
     // getUserInfo () {
     //   this.key = wx.getStorageSync('key')
@@ -136,117 +136,119 @@ export default {
     // }
   },
   computed: {
-    ...mapGetters([
-      'nickName',
-      'avatarUrl',
-      'canIUse'
-    ])
+    ...mapGetters(["nickName", "avatarUrl", "canIUse"])
   }
-}
+};
 </script>
 <style lang='less' scoped>
-.bg-header{
-  background-repeat:no-repeat;
-  width:100%;
+.bg-header {
+  background-repeat: no-repeat;
+  width: 100%;
   position: relative;
-  background-image: url('../../../static/img/bg/bg@2x.png');
-  background-size:cover;
+  background-image: url("../../../static/img/bg/bg@2x.png");
+  background-size: cover;
   height: 3.33rem;
-  .banner-me{
+  .banner-me {
     height: 2.82rem;
     background-color: #ffffff;
-    -moz-box-shadow:5px 5px 8px #B8B8B8;
-    -webkit-box-shadow:5px 5px 8px #B8B8B8;
-    box-shadow:5px 5px 8px #B8B8B8;
+    -moz-box-shadow: 5px 5px 8px #b8b8b8;
+    -webkit-box-shadow: 5px 5px 8px #b8b8b8;
+    box-shadow: 5px 5px 8px #b8b8b8;
     width: 90%;
-    border-radius:30rpx;
-    position:absolute;
-    left:50%;
-    margin-left:-45%;
-    top:0.9rem;
+    border-radius: 30rpx;
+    position: absolute;
+    left: 50%;
+    margin-left: -45%;
+    top: 0.9rem;
     .banner-top {
       position: relative;
       display: flex;
-      .banner-head{
-        width:1.3rem;
-        height:1.3rem;
-        overflow:hidden;
-        border-radius:50%;
-        margin:-40rpx 0 0 20rpx;
-        background-color:#808080;
-        border:10rpx solid #fff;
+      .banner-head {
+        width: 1.3rem;
+        height: 1.3rem;
+        overflow: hidden;
+        border-radius: 50%;
+        margin: -40rpx 0 0 20rpx;
+        background-color: #808080;
+        border: 10rpx solid #fff;
         flex: 1.1;
-        background-size:cover;
+        background-size: cover;
       }
       .banner-name {
         flex: 4;
-        color:#808080;
-        padding:0 0 0 0.4rem;
-        font-size:0.3rem;
-        line-height:1rem;
+        color: #808080;
+        padding: 0 0 0 0.4rem;
+        font-size: 0.3rem;
+        line-height: 1rem;
       }
     }
     .banner-bottom {
-      color:#808080;
-      text-align:center;
-      font-size:0.28rem;
-      margin-top:0.35rem;
+      color: #808080;
+      text-align: center;
+      font-size: 0.28rem;
+      margin-top: 0.35rem;
     }
   }
 }
-.sec-order{
-  background-color:#fff;
-  margin-top:0.7rem;
-  .order-opts{
-    .order-opt{
-      padding:0.2rem 0 0;
-      .order-opt-img{
-        width:0.6rem;
-        height:0.6rem;
-        margin:0 auto;
-        display:block;
-        img{
-            width:100%;
-            height:100%;
-          }
+.sec-order {
+  background-color: #fff;
+  margin-top: 0.7rem;
+  .order-opts {
+    .order-opt {
+      padding: 0.2rem 0 0;
+      .order-opt-img {
+        width: 0.6rem;
+        height: 0.6rem;
+        margin: 0 auto;
+        display: block;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
 
-      p{
-        color:#808080;
+      p {
+        color: #808080;
         text-align: center;
-        font-size:0.26rem;
-        line-height:0.6rem;
+        font-size: 0.26rem;
+        line-height: 0.6rem;
       }
     }
   }
 }
-.sec-application{
-  background-color:#fff;
+.sec-application {
+  background-color: #fff;
 }
 .btn-login {
-height:0.8rem;
-width:4rem;
-margin:0 auto;
-    background-image: -webkit-gradient(linear,left top,right top,from(#ff8e02),to(#fb314a));
-    background-image: linear-gradient(90deg,#ff8e02,#fb314a);
-    border-radius: 0.4rem;
-    overflow: hidden;
-    position: relative;
-    span{
-      position: absolute;
-      width:100%;
-      text-align:center;
-      color:#fff;
-      line-height: 0.8rem;
-      left:0;
-    }
-  button{
+  height: 0.8rem;
+  width: 4rem;
+  margin: 0 auto;
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#ff8e02),
+    to(#fb314a)
+  );
+  background-image: linear-gradient(90deg, #ff8e02, #fb314a);
+  border-radius: 0.4rem;
+  overflow: hidden;
+  position: relative;
+  span {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    line-height: 0.8rem;
+    left: 0;
+  }
+  button {
     padding: 0.2rem 0.1rem;
     opacity: 0;
-    position:absolute;
-    width:100%;
-    height:100%;
-    top:0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
   }
 }
 .weex-ct {
@@ -286,15 +288,15 @@ margin:0 auto;
   -webkit-box-align: center;
   -webkit-align-items: center;
   align-items: center;
-  padding:0 0.3rem;
-border-bottom:1px solid #f2f2f2;
+  padding: 0 0.3rem;
+  border-bottom: 1px solid #f2f2f2;
 }
-.journey-title-icon{
-  width: .08rem;
-  height: .4rem;
-  border-radius: .02rem;
+.journey-title-icon {
+  width: 0.08rem;
+  height: 0.4rem;
+  border-radius: 0.02rem;
   background-color: #ffc900;
-  margin-right: .2rem;
+  margin-right: 0.2rem;
 }
 .weex-el {
   display: block;
@@ -323,9 +325,9 @@ border-bottom:1px solid #f2f2f2;
   word-wrap: break-word;
   overflow: hidden;
 }
-.journey-title-text{
+.journey-title-text {
   color: #3d3d3d;
-  font-size: .34rem;
+  font-size: 0.34rem;
   font-weight: 700;
 }
 </style>
