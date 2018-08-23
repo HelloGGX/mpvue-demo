@@ -1,0 +1,7 @@
+export const SET_CALENDAR_LIST = 'SET_CALENDAR_LIST'
+export const SET_NICKNAME = 'SET_NICKNAME'
+export const SET_OID = 'SET_OID'
+export const SET_AVATARURL = 'SET_AVATARURL'
+export const SET_CANIUSE = 'SET_CANIUSE'
+export const SET_VISIBLE = 'SET_VISIBLE'
+export const SET_AUTHPHONE = 'SET_AUTHPHONE'

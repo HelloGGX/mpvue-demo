@@ -1,0 +1,164 @@
+@import "./variable.less";
+
+body, html {
+    line-height: 1;
+    font-family: 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', arial, sans-serif, 'Droid Sans Fallback';
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    background: @color-background;
+    color: @color-text;
+    height: 100%;
+}
+.loading-container{
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.clearfix{overflow:auto;_height:1%}
+.line{height: 0.2rem; background-color: #f2f2f2;}
+.base-bg>div {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: cover;
+}
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.thin-bottom {
+    border-bottom: 1px solid #f1f1f1;
+}
+.hairlines .r1b {
+    border-width: .5px!important;
+}
+.opacity-black { width: 100%; height: 100%; background-color: #000; }
+.opacity-black img { transition: opacity .5s; opacity: 0.9; }
+.sticky {
+  width: 100%;
+  position: sticky!important;
+  top: 0;
+  z-index: @sticky-zindex;
+}
+.over-hid{
+  overflow: hidden;
+}
+.ellip-2{
+  display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 2;
+overflow: hidden;
+}
+.ellip-3{
+  display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+overflow: hidden;
+}
+body .cell-arrow {
+  position: relative;
+}
+swiper {
+  overflow: hidden;
+    position: relative;
+    height: 100%;
+    swiper-item{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+}
+.fixed, .sticky {
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.sticky {
+  position: sticky;
+  position: -webkit-sticky;
+}
+.bind-phone{
+  position: relative;
+  margin-top:0.6rem;
+  .btn-phone{
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+    padding:0;
+    opacity:0;
+    z-index: 999;
+  }
+}
+.tip-txt {
+  font-size:22rpx;
+color:#808080;
+text-align:center;
+}
+.tip-img {
+  display:flex;
+  width:3rem;
+  height:1rem;
+  margin-top:0.4rem;
+  margin-left:auto;
+  margin-right:auto;
+  img {
+    flex: 1
+  }
+  span {
+    flex: 2;
+    font-size:0.28rem;
+    text-align:center;
+    line-height:1rem;
+  }
+}
+.cell {
+  position: relative;
+  padding: 0 12px;
+  min-height: 30px;
+  color: #333;
+  background-color: #fff;
+  font-size: 15px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+}
+.cell-indent {
+  padding: 10px 12px;
+}
+.cell>.cell-item {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -moz-box-flex: 1;
+  -moz-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+.cell-label {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+
