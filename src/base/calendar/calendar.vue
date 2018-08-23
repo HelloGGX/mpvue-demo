@@ -38,8 +38,8 @@ li {
   flex: 2.5;
 }
 .wh_content_all {
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
-    "Helvetica Neue", STHeiti, "Microsoft Yahei", Tahoma, Simsun, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'Helvetica Neue', STHeiti, 'Microsoft Yahei', Tahoma, Simsun, sans-serif;
   background-color: #fff;
   width: 100%;
   overflow: hidden;
@@ -88,10 +88,10 @@ wh_content_item_tag {
   margin: auto;
   justify-content: center;
   align-items: center;
-  p{
+  p {
     width: 100%;
   }
-  .wh_item_price{
+  .wh_item_price {
     font-size: 0.24rem;
     color: #ff5000;
   }
@@ -134,11 +134,11 @@ wh_content_item_tag {
   border-radius: 100px;
 }
 .wh_content_item .wh_chose_day {
- background:#ff5000;
- border-radius:10rpx;
- p{
- color:#fff;
- }
+  background: #ff5000;
+  border-radius: 10rpx;
+  p {
+    color: #fff;
+  }
 }
 </style>
 <template>
@@ -267,10 +267,10 @@ export default {
     forMatArgs () {
       let markDate = this.markDate
       let markDateMore = this.markDateMore
-      markDate = markDate.map((k) => {
+      markDate = markDate.map(k => {
         return timeUtil.dateFormat(k)
       })
-      markDateMore = markDateMore.map((k) => {
+      markDateMore = markDateMore.map(k => {
         k.date = timeUtil.dateFormat(k.date)
         return k
       })
@@ -286,11 +286,15 @@ export default {
         let k = arr[i]
         k.chooseDay = false
         k.price = ''
+        k.dateId = null
+        k.dayHide = true
         const nowTime = k.date
-        const t = new Date(nowTime).getTime() / 1000
+        // const t = new Date(nowTime).getTime() / 1000
         for (let j = 0; j < this.prices.length; j++) {
           if (k.date === timeUtil.dateFormat(this.prices[j].date)) {
             k.price = `￥${this.prices[j].sale_price}`
+            k.dateId = this.prices[j].products_date_id
+            k.dayHide = false
           }
         }
         // 看每一天的class
@@ -303,13 +307,17 @@ export default {
         k.markClassName = markClassName
         k.isMark = markDate.indexOf(nowTime) > -1
         // 无法选中某天
-        k.dayHide = t < this.agoDayHide || t > this.futureDayHide
+        // k.dayHide = t < this.agoDayHide || t > this.futureDayHide
         if (k.isToday) {
           this.$emit('isToday', nowTime)
         }
         let flag = !k.dayHide && k.otherMonth === 'nowMonth'
         if (chooseDay && chooseDay === nowTime && flag) {
-          this.$emit('choseDay', {time: nowTime, price: k.price})
+          this.$emit('choseDay', {
+            id: k.dateId,
+            time: nowTime,
+            price: k.price
+          })
           // this.historyChose.push(nowTime)
           k.chooseDay = true
         }

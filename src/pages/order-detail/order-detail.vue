@@ -7,7 +7,7 @@
 <script type='text/ecmascript-6'>
 export default {
   components: {}
-};
+}
 </script>
 
 <style lang='less' scoped>

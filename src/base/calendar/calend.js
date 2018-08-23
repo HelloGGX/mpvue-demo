@@ -12,12 +12,16 @@ export default {
     const month = date.getMonth() + 1
     const dateFirstOne = new Date(year + '/' + month + '/1')
     return this.sundayStart
-      ? dateFirstOne.getDay() === 0 ? 7 : dateFirstOne.getDay()
-      : dateFirstOne.getDay() === 0 ? 6 : dateFirstOne.getDay() - 1
+      ? dateFirstOne.getDay() === 0
+        ? 7
+        : dateFirstOne.getDay()
+      : dateFirstOne.getDay() === 0
+        ? 6
+        : dateFirstOne.getDay() - 1
   },
   /**
    * 获取当前日期上个月或者下个月
-  */
+   */
   getOtherMonth: function (date, str = 'nextMonth') {
     const timeArray = this.dateFormat(date).split('/')
     const year = timeArray[0]
@@ -56,11 +60,13 @@ export default {
   getLeftArr: function (date) {
     let arr = []
     const leftNum = this.getMonthweek(date)
-    const num = this.getDaysInOneMonth(this.getOtherMonth(date, 'preMonth')) - leftNum + 1
+    const num =
+      this.getDaysInOneMonth(this.getOtherMonth(date, 'preMonth')) - leftNum + 1
     const preDate = this.getOtherMonth(date, 'preMonth')
     // 上个月多少开始
     for (let i = 0; i < leftNum; i++) {
-      const nowTime = preDate.getFullYear() + '/' + (preDate.getMonth() + 1) + '/' + (num + i)
+      const nowTime =
+        preDate.getFullYear() + '/' + (preDate.getMonth() + 1) + '/' + (num + i)
       arr.push({
         id: num + i,
         date: nowTime,
@@ -77,7 +83,8 @@ export default {
     const leftLength = this.getDaysInOneMonth(date) + this.getMonthweek(date)
     const _length = 7 - leftLength % 7
     for (let i = 0; i < _length; i++) {
-      const nowTime = nextDate.getFullYear() + '/' + (nextDate.getMonth() + 1) + '/' + (i + 1)
+      const nowTime =
+        nextDate.getFullYear() + '/' + (nextDate.getMonth() + 1) + '/' + (i + 1)
       arr.push({
         id: i + 1,
         date: nowTime,
@@ -90,8 +97,9 @@ export default {
   // format日期
   dateFormat: function (date) {
     date = typeof date === 'string' ? new Date(date.replace(/-/g, '/')) : date
-    return date.getFullYear() + '/' + (date.getMonth() + 1) + '/' +
-      date.getDate()
+    return (
+      date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
+    )
   },
   // 获取某月的列表不包括上月和下月
   getMonthListNoOther: function (date) {
@@ -114,7 +122,11 @@ export default {
   },
   // 获取某月的列表 用于渲染
   getMonthList: function (date) {
-    return [...this.getLeftArr(date), ...this.getMonthListNoOther(date), ...this.getRightArr(date)]
+    return [
+      ...this.getLeftArr(date),
+      ...this.getMonthListNoOther(date),
+      ...this.getRightArr(date)
+    ]
   },
   // 默认是周一开始
   sundayStart: false

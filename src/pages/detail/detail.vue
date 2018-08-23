@@ -1,91 +1,92 @@
 <!-- 详情页 -->
 <template>
-<scroll-view style="height:calc(100vh);" @scroll="scroll" :scroll-into-view="toView" scroll-y="true" scroll-with-animation="true"  >
-  <div class="goods-container">
-    <div id="banner" class="goods-banner" :style="{ height:bannerHeight+'rpx', backgroundImage:'url(' + goodInfo.image_url + ')'}"></div>
-    <div class="good-list">
-      <div class="goods-wrapper">
-        <div class="mod-price">
-          <div class="price-area main-price-area">
-            <span class="price-str">
-              <span class="yen">￥</span>
+  <scroll-view style="height:calc(100vh);" @scroll="scroll" :scroll-into-view="toView" scroll-y="true" scroll-with-animation="true">
+    <div class="goods-container">
+      <div id="banner" class="goods-banner" :style="{ height:bannerHeight+'rpx', backgroundImage:'url(' + goodInfo.image_url + ')'}"></div>
+      <div class="good-list">
+        <div class="goods-wrapper">
+          <div class="mod-price">
+            <div class="price-area main-price-area">
+              <span class="price-str">
+                <span class="yen">￥</span>
               <span class="price-int">{{getShowPrice}}</span></span>
-            <span class="extra">
-              <span class="orange-tag">超值优惠</span></span>
-          </div>
-          <div class="price-area">
-            <span class="preprice-text">价格</span>
-            <span class="price-str">
-              <span class="yen">￥</span>
+              <span class="extra">
+                <span class="orange-tag">超值优惠</span></span>
+            </div>
+            <div class="price-area">
+              <span class="preprice-text">价格</span>
+              <span class="price-str">
+                <span class="yen">￥</span>
               <span class="price-int">{{goodInfo.cost_price}}</span></span>
+            </div>
           </div>
-        </div>
-        <div class="mod-title">
-          <div class="title">{{goodInfo.title}}</div>
-          <div class="share-wrap J_Share">
-            <div class="left"></div>
-            <div class="right">
-              <i class="iconfont icon-share"></i>
-              <div class="text">分享</div></div>
-          </div>
-        </div>
-        <div class="mod-sold">
-          <div class="content">阅读量2000</div>
-        </div>
-        <div class="mod-brand">
-          <div class="brand-box cell-arrow">
-            <img class="brand-icon" src="/static/img/icon/brand-icon.png">
-            <div class="services-wrap" >
-              <div class="service-wrap" >
-                <img class="icon" src="/static/img/icon/check-icon.png">
-                <span class="tag-title" style="color:#666666;" >行程透明</span>
-              </div>
-              <div class="service-wrap" >
-                <img class="icon" src="/static/img/icon/check-icon.png">
-                <span class="tag-title" style="color:#666666;" >保障出行</span>
-              </div>
-              <div class="service-wrap" >
-                <img class="icon" src="/static/img/icon/check-icon.png" >
-                <span class="tag-title" style="color:#666666;">(使用花呗) 先游后付</span>
+          <div class="mod-title">
+            <div class="title">{{goodInfo.title}}</div>
+            <div class="share-wrap J_Share">
+              <div class="left"></div>
+              <div class="right">
+                <i class="iconfont icon-share"></i>
+                <div class="text">分享</div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="mod-infocell-container">
-          <div class="mod-multiinfocell">
-            <div class="label">服务</div>
-            <div class="infos-container">
-              <div class="info" >
-                <img class="item-icon" src="/static/img/icon/confirm-icon.png">
+          <div class="mod-sold">
+            <div class="content">阅读量2000</div>
+          </div>
+          <div class="mod-brand">
+            <div class="brand-box cell-arrow">
+              <img class="brand-icon" src="/static/img/icon/brand-icon.png">
+              <div class="services-wrap">
+                <div class="service-wrap">
+                  <img class="icon" src="/static/img/icon/check-icon.png">
+                  <span class="tag-title" style="color:#666666;">行程透明</span>
+                </div>
+                <div class="service-wrap">
+                  <img class="icon" src="/static/img/icon/check-icon.png">
+                  <span class="tag-title" style="color:#666666;">保障出行</span>
+                </div>
+                <div class="service-wrap">
+                  <img class="icon" src="/static/img/icon/check-icon.png">
+                  <span class="tag-title" style="color:#666666;">(使用花呗) 先游后付</span>
+                </div>
               </div>
-              <div class="info" >
+            </div>
+          </div>
+          <div class="mod-infocell-container">
+            <div class="mod-multiinfocell">
+              <div class="label">服务</div>
+              <div class="infos-container">
+                <div class="info">
+                  <img class="item-icon" src="/static/img/icon/confirm-icon.png">
+                </div>
+                <div class="info">
                   <div class="item-text">卖家承诺此商品拍下付款后即可按期顺利出行，无需等待确认</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="mod-selectsku">
-          <div class="w-title">
-            <div class="wt-title">出发时间:</div>
-            <div class="wt-subtitle">{{selectDay}}</div>
+          <div class="mod-selectsku">
+            <div class="w-title">
+              <div class="wt-title">出发时间:</div>
+              <div class="wt-subtitle">{{selectDay}}</div>
+            </div>
+            <calendar :prices="getprice" v-on:choseDay="clickDay"></calendar>
           </div>
-          <calendar :prices="getprice" v-on:choseDay="clickDay"></calendar>
-        </div>
-        <div class="mod-tabs">
-          <tab  v-model="tabItem">
-            <tab-item selected @on-item-click="onItemClick">商品详情</tab-item>
-            <tab-item @on-item-click="onItemClick">费用说明</tab-item>
-            <tab-item @on-item-click="onItemClick">线路详情</tab-item>
-          </tab>
-        </div>
-        <div class="tabs-container">
+          <div class="mod-tabs">
+            <tab v-model="tabItem">
+              <tab-item selected @on-item-click="onItemClick">商品详情</tab-item>
+              <tab-item @on-item-click="onItemClick">费用说明</tab-item>
+              <tab-item @on-item-click="onItemClick">线路详情</tab-item>
+            </tab>
+          </div>
+          <div class="tabs-container">
             <div class="mod-tuwen">
               <div class="w-title md-tit" id="tuwen">
                 <div class="wt-title">图文介绍</div>
               </div>
               <div class="w-content">
                 <div v-for="(item,index) in goodInfo.image_arr" :key="index">
-                  <img lazy-load  mode='widthFix' :src="item" alt="">
+                  <img lazy-load mode='widthFix' :src="item" alt="">
                 </div>
               </div>
             </div>
@@ -99,7 +100,7 @@
                     <div class="bar-tabview">
                       <div class="tabview-tabs">
                         <ul class="tabview-tabs-wrap">
-                          <li class="tabview-tab tabview-selected" >
+                          <li class="tabview-tab tabview-selected">
                             <div class="tabview-tab-title">
                               <div class="product-item active">
                                 <span>成都直飞</span>
@@ -293,17 +294,17 @@
                 <div class="wt-title">线路详情</div>
               </div>
               <div class="w-content">
-
+  
               </div>
             </div>
-        </div>
-        <div class="mod-buybanner-wrap">
+          </div>
+          <div class="mod-buybanner-wrap">
             <div class="mod-buybanner" :style="jugeX">
               <div class="cnt">
                 <div class="action-wrap">
                   <div class="wx-wrap">
                     <div class="wx">
-                      <button open-type="contact" session-from="userMsg"/>
+                      <button open-type="contact" session-from="userMsg" />
                       <i class="iconfont icon-interactive"></i>
                       <div class="text">客服</div>
                     </div>
@@ -324,15 +325,16 @@
                 </div>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <ActSheet v-model="bottomVisible" :info="goodInfo" @confirm="buyConfirm">
-  </ActSheet> <!--底部弹出层-->
-  <mptoast></mptoast>
-  <scroll-top v-model="offsetTop" @scrollToTop="scrollToTop"></scroll-top>
-</scroll-view>
+    <ActSheet v-model="bottomVisible" :info="goodInfo" @confirm="buyConfirm">
+    </ActSheet>
+    <!--底部弹出层-->
+    <mptoast></mptoast>
+    <scroll-top v-model="offsetTop" @scrollToTop="scrollToTop"></scroll-top>
+  </scroll-view>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -341,7 +343,7 @@ import Calendar from 'base/calendar/calendar.vue'
 import Tab from 'components/tab/tab'
 import TabItem from 'components/tab/tab-item'
 import ScrollTop from 'base/scroll-top/scroll-top'
-import {throttle, isIphoneX, changeDate, del$} from 'utils/tools'
+import { throttle, isIphoneX, changeDate, del$ } from 'utils/tools'
 import Mptoast from 'mptoast'
 import ActSheet from 'components/actSheet/actSheet'
 
@@ -355,7 +357,7 @@ export default {
       tabItem: 0,
       toView: '',
       offsetTop: 0,
-      price: '',
+      price: '', // 成人价
       selectDay: '',
       bottomVisible: false // 底部弹出层显示与否
     }
@@ -374,7 +376,11 @@ export default {
   methods: {
     buyConfirm (v) {
       wx.navigateTo({
-        url: `../trip-buy/main?id=1&perType=${v.perType}&perNum=${v.perNum}&price=${v.price}&date=${this.selectDay}&info=${JSON.stringify(this.goodInfo)}`
+        url: `../trip-buy/main?id=1&title=${v.title}&adultNum=${
+          v.adultNum
+        }&childNum=${v.childNum}&adultPrice=${v.adultPrice}&childPrice=${
+          v.childPrice
+        }&totalPrice=${v}&date=${this.selectDay}`
       })
     },
     buy () {
@@ -399,26 +405,33 @@ export default {
         phoneNumber: '18000570544'
       })
     },
-    jugeTab () { // 判断锚点距顶部的距离
+    jugeTab () {
+      // 判断锚点距顶部的距离
       let _thi = this
       let query = wx.createSelectorQuery()
-      query.selectAll('.md-tit').boundingClientRect(function (rects) {
-        for (let i = 0; i < rects.length; i++) {
-          if (rects[i].top > 0 && rects[i].top <= 88) {
-            _thi.tabItem = i
+      query
+        .selectAll('.md-tit')
+        .boundingClientRect(function (rects) {
+          for (let i = 0; i < rects.length; i++) {
+            if (rects[i].top > 0 && rects[i].top <= 88) {
+              _thi.tabItem = i
+            }
           }
-        }
-      }).exec()
+        })
+        .exec()
     },
-    scrollToTop () { // 回到顶部
+    scrollToTop () {
+      // 回到顶部
       this.toView = 'banner'
     },
-    scroll (e) { // 滚动回调
+    scroll (e) {
+      // 滚动回调
       this.offsetTop = e.mp.detail.scrollTop
       this.toView = ''
       throttle(this.jugeTab(), 0)
     },
-    onItemClick (i) { // 锚点切换
+    onItemClick (i) {
+      // 锚点切换
       if (i === 0) {
         this.toView = 'tuwen'
       } else if (i === 1) {
@@ -427,19 +440,39 @@ export default {
         this.toView = 'pdf'
       }
     },
-    switchItem (res) { // 点击选项卡的回调
+    switchItem (res) {
+      // 点击选项卡的回调
       let oIndex = res.mp.detail.current
       this.tabItem = oIndex
     },
-    clickDay (data) { // 日历选中某天的回调
-      this.price = data.price
-      this.goodInfo.sale_price = del$(data.price)
+    clickDay (data) {
+      // 日历选中某天的回调
+      if (data.id) {
+        api
+          .postGoodId({ id: data.id })
+          .then(res => {
+            for (let i = 0; i < res.lists.length; i++) {
+              if (res.lists[i].name === '儿童') {
+                this.goodInfo.child_price = res.lists[i].price_xs
+              }
+            }
+            if (res.state === 'ok') {
+            }
+          })
+          .catch(errMsg => {})
+        this.price = data.price
+        this.goodInfo.sale_price = del$(data.price)
+      }
       this.selectDay = changeDate(data.time)
     },
-    async _getDetail () { // 异步回去该页所有数据
+    async _getDetail () {
+      // 异步回去该页所有数据
       let _thi = this
       try {
-        await api.getDetailData({id: this.goodid})
+        await api
+          .getDetailData({
+            id: this.goodid
+          })
           .then(res => {
             this.goodInfo = res.lists[0]
             this.price = `￥${this.goodInfo.sale_price}`
@@ -456,10 +489,15 @@ export default {
         console.log(e)
       }
     },
-    getBannerHeight () { // 根据页面宽度设置banner高度
-      wx.createSelectorQuery().select('#banner').boundingClientRect((rect) => {
-        this.bannerHeight = rect.width
-      }).exec()
+    getBannerHeight () {
+      // 根据页面宽度设置banner高度
+      wx
+        .createSelectorQuery()
+        .select('#banner')
+        .boundingClientRect(rect => {
+          this.bannerHeight = rect.width
+        })
+        .exec()
     }
   },
   mounted () {
@@ -471,7 +509,8 @@ export default {
     getShowPrice () {
       return del$(this.goodInfo.sale_price)
     },
-    jugeX () { // 判断是否为iphoneX
+    jugeX () {
+      // 判断是否为iphoneX
       return isIphoneX() ? 'padding-bottom:20px' : ''
     },
     bannerHeight: {
@@ -495,113 +534,116 @@ export default {
   }
 }
 </script>
+
 <style lang='less' scoped>
-.goods-container{
-    position: relative;
+.goods-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 640px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 0;
+  background-color: #f4f4f4;
+  .goods-banner {
     width: 100%;
+    position: relative;
+    background-size: cover;
+  }
+  .bg-layer {
+    position: relative;
     height: 100%;
-    max-width: 640px;
-    min-height: 100%;
-    margin: 0 auto;
-    padding: 0;
-    background-color: #f4f4f4;
-    .goods-banner{
-      width: 100%;
-      position: relative;
-      background-size: cover;
-    }
-    .bg-layer{
-      position: relative;
-      height: 100%;
-    }
-    .good-list{
-      background-color: #f2f2f2;
-    }
+  }
+  .good-list {
+    background-color: #f2f2f2;
+  }
 }
+
 .mod-price {
-    padding: .3rem .24rem .15rem;
-    background: #fff;
-    .price-area.main-price-area{
-      margin-top: 0;
-      color: #999;
-      .price-str{
-        color: #ff5000;
-        font-size: .36rem;
-        margin-right: .12rem;
-        text-decoration: none;
-        .price-int{
-          font-size: .48rem;
-        }
+  padding: 0.3rem 0.24rem 0.15rem;
+  background: #fff;
+  .price-area.main-price-area {
+    margin-top: 0;
+    color: #999;
+    .price-str {
+      color: #ff5000;
+      font-size: 0.36rem;
+      margin-right: 0.12rem;
+      text-decoration: none;
+      .price-int {
+        font-size: 0.48rem;
       }
-      .extra{
+    }
+    .extra {
+      position: relative;
+      top: -0.04rem;
+      .orange-tag {
         position: relative;
-        top: -.04rem;
-        .orange-tag{
-          position: relative;
-          color: #ff5000;
-          font-size: .2rem;
-          padding: 0 3px;
-          &:after{
-            position: absolute;
-            content: "";
-            top: 0;
-            left: 0;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-            width: 100%;
-            height: 100%;
-            border: 1px solid #ff5000;
-            pointer-events: none;
-            -webkit-transform-origin: 0 0;
-            transform-origin: 0 0;
-            border-radius: 2px;
-          }
+        color: #ff5000;
+        font-size: 0.2rem;
+        padding: 0 3px;
+        &:after {
+          position: absolute;
+          content: '';
+          top: 0;
+          left: 0;
+          -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+          width: 100%;
+          height: 100%;
+          border: 1px solid #ff5000;
+          pointer-events: none;
+          -webkit-transform-origin: 0 0;
+          transform-origin: 0 0;
+          border-radius: 2px;
         }
       }
     }
-    .price-area{
-      margin-top: 0;
-      .preprice-text{
-        color: #999;
-        font-size: .24rem;
-        margin-right: .02rem;
-      }
-      .price-str{
-        color: #999;
-        font-size: .24rem;
-        margin-right: .12rem;
-        text-decoration: line-through;
-      }
+  }
+  .price-area {
+    margin-top: 0;
+    .preprice-text {
+      color: #999;
+      font-size: 0.24rem;
+      margin-right: 0.02rem;
     }
+    .price-str {
+      color: #999;
+      font-size: 0.24rem;
+      margin-right: 0.12rem;
+      text-decoration: line-through;
+    }
+  }
 }
+
 .mod-title {
-    background: #fff;
-    padding: .09rem .24rem;
-    padding-right: 0;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    align-items: center;
-    .title{
-      -webkit-box-flex: 1;
+  background: #fff;
+  padding: 0.09rem 0.24rem;
+  padding-right: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+  .title {
+    -webkit-box-flex: 1;
     -webkit-flex: 1;
     -moz-box-flex: 1;
     -moz-flex: 1;
     -ms-flex: 1;
     flex: 1;
     color: #3d3d3d;
-    font-size: .3rem;
-    line-height: .42rem;
+    font-size: 0.3rem;
+    line-height: 0.42rem;
     font-weight: 600;
-    padding-right: .24rem;
-    }
-    .share-wrap {
+    padding-right: 0.24rem;
+  }
+  .share-wrap {
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-flex;
@@ -612,187 +654,192 @@ export default {
     -webkit-align-items: center;
     -moz-align-items: center;
     align-items: center;
-    padding-right: .24rem;
+    padding-right: 0.24rem;
     .left {
-    z-index: 1;
-    position: relative;
-    height: .56rem;
-    margin-right: .24rem;
-    &::before{
-      pointer-events: none;
-    position: absolute;
-    content: "";
-    width: 1px;
-    background: #f2f3f4;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    -webkit-transform-origin: 0 0;
-    transform-origin: 0 0;
-    }
+      z-index: 1;
+      position: relative;
+      height: 0.56rem;
+      margin-right: 0.24rem;
+      &::before {
+        pointer-events: none;
+        position: absolute;
+        content: '';
+        width: 1px;
+        background: #f2f3f4;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+      }
     }
     .right {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-direction: normal;
-    -webkit-box-orient: vertical;
-    -webkit-flex-direction: column;
-    -moz-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    align-items: center;
-    color: #999;
-    .iconfont{
-      font-size: .5rem;
-      line-height:0.4rem;
-
-    }
-    .text{
-      margin-bottom: .09rem;
-    font-size: .24rem;
-    }
- }
- }
-}
-.mod-sold{
-  background-color: #fff;
-    color: #999;
-    font-size: .24rem;
-    padding: .15rem .24rem;
-}
-.mod-brand{
-  color: #333;
-    line-height: 1.2;
-    font-size: .28rem;
-    padding: .15rem 0 .3rem .24rem;
-    background-color: #fff;
-    .brand-box {
       display: -webkit-box;
       display: -webkit-flex;
       display: -moz-flex;
       display: -ms-flexbox;
       display: flex;
+      -webkit-box-direction: normal;
+      -webkit-box-orient: vertical;
+      -webkit-flex-direction: column;
+      -moz-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
       -webkit-box-align: center;
       -ms-flex-align: center;
       -webkit-align-items: center;
       -moz-align-items: center;
       align-items: center;
+      color: #999;
+      .iconfont {
+        font-size: 0.5rem;
+        line-height: 0.4rem;
+      }
+      .text {
+        margin-bottom: 0.09rem;
+        font-size: 0.24rem;
+      }
     }
-    .brand-icon,.brand-text{
-      margin-right: .2rem;
-    }
-    .brand-icon {
-      height: .28rem;
-      display: block;
-      width:1rem;
-    }
-    .services-wrap {
-        -webkit-box-flex: 1;
-        -webkit-flex: 1;
-        -moz-box-flex: 1;
-        -moz-flex: 1;
-        -ms-flex: 1;
-        flex: 1;
-        margin-right: .44rem;
-        overflow: hidden;
-        .service-wrap {
-            -webkit-flex-shrink: 0;
-            -moz-flex-shrink: 0;
-            -ms-flex-negative: 0;
-            flex-shrink: 0;
-            font-size: .24rem;
-            margin-right: .22rem;
-            .icon {
-                display: block;
-                margin-right: .06rem;
-                max-height: 12px;
-                width:0.24rem;
-                height:0.24rem;
-
-            }
-            .tag-title {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                line-height: 1.4;
-                max-width: 6em;
-            }
-        }
-    }
-    .services-wrap,.services-wrap .service-wrap{
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -moz-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        -webkit-align-items: center;
-        -moz-align-items: center;
-        align-items: center;
-    }
+  }
 }
-.mod-multiinfocell {
-    margin-top: .18rem;
-    background: #fff;
-    padding: .3rem .24rem .12rem;
-    color: #3d3d3d;
-    font-size: .24rem;
+
+.mod-sold {
+  background-color: #fff;
+  color: #999;
+  font-size: 0.24rem;
+  padding: 0.15rem 0.24rem;
+}
+
+.mod-brand {
+  color: #333;
+  line-height: 1.2;
+  font-size: 0.28rem;
+  padding: 0.15rem 0 0.3rem 0.24rem;
+  background-color: #fff;
+  .brand-box {
     display: -webkit-box;
     display: -webkit-flex;
     display: -moz-flex;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-direction: normal;
-    -webkit-box-orient: horizontal;
-    -webkit-flex-direction: row;
-    -moz-flex-direction: row;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    .label {
-        font-size: 13px;
-        color: #999;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+  }
+  .brand-icon,
+  .brand-text {
+    margin-right: 0.2rem;
+  }
+  .brand-icon {
+    height: 0.28rem;
+    display: block;
+    width: 1rem;
+  }
+  .services-wrap {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -moz-box-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin-right: 0.44rem;
+    overflow: hidden;
+    .service-wrap {
+      -webkit-flex-shrink: 0;
+      -moz-flex-shrink: 0;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+      font-size: 0.24rem;
+      margin-right: 0.22rem;
+      .icon {
+        display: block;
+        margin-right: 0.06rem;
+        max-height: 12px;
+        width: 0.24rem;
+        height: 0.24rem;
+      }
+      .tag-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
         white-space: nowrap;
-    }
-    .infos-container {
-      margin-left: .24rem;
-      .info {
-          display: -webkit-box;
-          display: -webkit-flex;
-          display: -moz-flex;
-          display: -ms-flexbox;
-          display: flex;
-          -webkit-box-direction: normal;
-          -webkit-box-orient: horizontal;
-          -webkit-flex-direction: row;
-          -moz-flex-direction: row;
-          -ms-flex-direction: row;
-          flex-direction: row;
-          margin-bottom: .18rem;
-          .item-icon {
-              height: .26rem;
-              width: 1.34rem;
-              margin-right: .08rem;
-          }
-          .item-text {
-              font-size: 13px;
-              line-height: 1.2;
-              color: #333;
-          }
+        line-height: 1.4;
+        max-width: 6em;
       }
     }
+  }
+  .services-wrap,
+  .services-wrap .service-wrap {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+  }
 }
+
+.mod-multiinfocell {
+  margin-top: 0.18rem;
+  background: #fff;
+  padding: 0.3rem 0.24rem 0.12rem;
+  color: #3d3d3d;
+  font-size: 0.24rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  .label {
+    font-size: 13px;
+    color: #999;
+    white-space: nowrap;
+  }
+  .infos-container {
+    margin-left: 0.24rem;
+    .info {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -moz-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-direction: normal;
+      -webkit-box-orient: horizontal;
+      -webkit-flex-direction: row;
+      -moz-flex-direction: row;
+      -ms-flex-direction: row;
+      flex-direction: row;
+      margin-bottom: 0.18rem;
+      .item-icon {
+        height: 0.26rem;
+        width: 1.34rem;
+        margin-right: 0.08rem;
+      }
+      .item-text {
+        font-size: 13px;
+        line-height: 1.2;
+        color: #333;
+      }
+    }
+  }
+}
+
 .mod-selectsku {
-    background: #fff;
-    margin-top: .24rem;
+  background: #fff;
+  margin-top: 0.24rem;
 }
+
 .w-title {
   display: -webkit-box;
   display: -webkit-flex;
@@ -804,89 +851,95 @@ export default {
   -webkit-align-items: center;
   -moz-align-items: center;
   align-items: center;
-  padding: 0 .24rem;
+  padding: 0 0.24rem;
   height: 0.9rem;
   .wt-title {
-    font-size: .3rem;
+    font-size: 0.3rem;
     font-weight: 700;
-    line-height: .36rem;
+    line-height: 0.36rem;
     color: #ff5000;
   }
   .wt-subtitle {
-      -webkit-box-flex: 2;
-      -webkit-flex: 2;
-      -moz-box-flex: 2;
-      -moz-flex: 2;
-      -ms-flex: 2;
-      flex: 2;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      padding: .06rem 0 0 .08rem;
-      font-size: .28rem;
-      color: #ff5000;
+    -webkit-box-flex: 2;
+    -webkit-flex: 2;
+    -moz-box-flex: 2;
+    -moz-flex: 2;
+    -ms-flex: 2;
+    flex: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.06rem 0 0 0.08rem;
+    font-size: 0.28rem;
+    color: #ff5000;
   }
 }
+
 .mod-tabs {
-    margin-top: .18rem;
-    position: -webkit-sticky;
-    position: -moz-sticky;
-    position: -ms-sticky;
-    position: sticky;
-    top: 0;
-    height: 45px;
-    background: #fff;
-    z-index: 9;
+  margin-top: 0.18rem;
+  position: -webkit-sticky;
+  position: -moz-sticky;
+  position: -ms-sticky;
+  position: sticky;
+  top: 0;
+  height: 45px;
+  background: #fff;
+  z-index: 9;
 }
-.tabs-container{
-  height:100%;
+
+.tabs-container {
+  height: 100%;
 }
+
 .mod-tuwen {
-    width: 100%;
-    overflow: hidden;
-    background: #fff;
-    font-size: .28rem;
-    line-height: .32rem;
-    margin-top: .18rem;
-    .w-content {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  font-size: 0.28rem;
+  line-height: 0.32rem;
+  margin-top: 0.18rem;
+  .w-content {
     overflow: hidden;
     position: relative;
-    padding: 0 .24rem .24rem;
+    padding: 0 0.24rem 0.24rem;
   }
   img {
     max-width: 100%;
     display: block;
   }
 }
+
 .w-title {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    -moz-align-items: center;
-    align-items: center;
-    padding: 0 .24rem;
-    height: 0.9rem;
-    .wt-title {
-    font-size: .3rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+  padding: 0 0.24rem;
+  height: 0.9rem;
+  .wt-title {
+    font-size: 0.3rem;
     font-weight: 700;
-    line-height: .36rem;
+    line-height: 0.36rem;
     color: #333;
   }
 }
+
 .w-content {
-    background-color: #f1f1f1;
-  }
+  background-color: #f1f1f1;
+}
+
 .mod-productdetail {
-    width: 100%;
-    font-size: .28rem;
-    line-height: .32rem;
-    margin-top: .18rem;
-    background: #fff;
+  width: 100%;
+  font-size: 0.28rem;
+  line-height: 0.32rem;
+  margin-top: 0.18rem;
+  background: #fff;
   .sticky-bar {
     height: 50px;
     background-color: #fafafa;
@@ -903,58 +956,59 @@ export default {
     .product-type {
       width: 100%;
       .tabview-tabs {
-          display: -webkit-box;
-          display: -webkit-flex;
-          display: -moz-flex;
-          display: -ms-flexbox;
-          display: flex;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-flex;
+        display: -ms-flexbox;
+        display: flex;
       }
       .tabview-tabs-wrap {
-          -webkit-box-pack: start;
-          -ms-flex-pack: start;
-          -webkit-justify-content: flex-start;
-          -moz-justify-content: flex-start;
-          justify-content: flex-start;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        -webkit-justify-content: flex-start;
+        -moz-justify-content: flex-start;
+        justify-content: flex-start;
       }
       .product-item {
-          display: inline-block;
-          box-sizing: border-box;
-          height: 32px;
-          padding-left: 5px;
-          padding-right: 5px;
-          font-size: 12px;
-          color: #3d3d3d;
-          background-color: #fff;
-          border-radius: 3px;
-          border: 1px solid #e0e0e0;
-          margin-left: 12px;
-          display: -webkit-box;
-          display: -webkit-flex;
-          display: -moz-flex;
-          display: -ms-flexbox;
-          display: flex;
-          -webkit-box-align: center;
-          -ms-flex-align: center;
-          -webkit-align-items: center;
-          -moz-align-items: center;
-          align-items: center;
-          -webkit-box-pack: center;
-          -ms-flex-pack: center;
-          -webkit-justify-content: center;
-          -moz-justify-content: center;
-          justify-content: center;
-          font-weight: 400;
-          &.active{
-          background-image: linear-gradient(90deg,#fce41d,#ffc503);
+        display: inline-block;
+        box-sizing: border-box;
+        height: 32px;
+        padding-left: 5px;
+        padding-right: 5px;
+        font-size: 12px;
+        color: #3d3d3d;
+        background-color: #fff;
+        border-radius: 3px;
+        border: 1px solid #e0e0e0;
+        margin-left: 12px;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        -moz-align-items: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        -moz-justify-content: center;
+        justify-content: center;
+        font-weight: 400;
+        &.active {
+          background-image: linear-gradient(90deg, #fce41d, #ffc503);
           border: none;
-          }
-        span{
+        }
+        span {
           white-space: normal;
         }
       }
     }
   }
 }
+
 .bar-tabview {
   .tabview-tabs {
     color: #3d3d3d;
@@ -1007,13 +1061,14 @@ export default {
     -webkit-box-sizing: border-box;
   }
   .tabview-tab-title {
-      position: relative;
-      text-align: center;
-      display: inline-block;
-      font-size: .28rem;
+    position: relative;
+    text-align: center;
+    display: inline-block;
+    font-size: 0.28rem;
   }
 }
-.mod-buybanner-wrap{
+
+.mod-buybanner-wrap {
   .mod-buybanner {
     position: fixed;
     z-index: 10;
@@ -1023,153 +1078,87 @@ export default {
     padding-bottom: constant(safe-area-inset-bottom);
     padding-bottom: env(safe-area-inset-bottom);
     background: #fff;
-    .cnt{
+    .cnt {
       box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
     .action-wrap {
-        height: .96rem;
+      height: 0.96rem;
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -moz-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      -moz-align-items: center;
+      align-items: center;
+      .collect-wrap,
+      .shop-wrap,
+      .wx-wrap {
+        height: 100%;
+      }
+      .collect,
+      .shop,
+      .wx {
+        position: relative;
+        width: 0.96rem;
+        height: 100%;
         display: -webkit-box;
         display: -webkit-flex;
         display: -moz-flex;
         display: -ms-flexbox;
         display: flex;
+        -webkit-box-direction: normal;
+        -webkit-box-orient: vertical;
+        -webkit-flex-direction: column;
+        -moz-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
         -webkit-box-align: center;
         -ms-flex-align: center;
         -webkit-align-items: center;
         -moz-align-items: center;
         align-items: center;
-        .collect-wrap,.shop-wrap,.wx-wrap{
-          height:100%;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        -moz-justify-content: center;
+        justify-content: center;
+        color: #666;
+        font-size: 0.2rem;
+        .iconfont {
+          font-size: 0.4rem;
+          line-height: 0.45rem;
         }
-        .collect,.shop,.wx{
-          position: relative;
-          width: .96rem;
+        button {
+          position: absolute;
+          width: 100%;
           height: 100%;
-          display: -webkit-box;
-          display: -webkit-flex;
-          display: -moz-flex;
-          display: -ms-flexbox;
-          display: flex;
-          -webkit-box-direction: normal;
-          -webkit-box-orient: vertical;
-          -webkit-flex-direction: column;
-          -moz-flex-direction: column;
-          -ms-flex-direction: column;
-          flex-direction: column;
-          -webkit-box-align: center;
-          -ms-flex-align: center;
-          -webkit-align-items: center;
-          -moz-align-items: center;
-          align-items: center;
-          -webkit-box-pack: center;
-          -ms-flex-pack: center;
-          -webkit-justify-content: center;
-          -moz-justify-content: center;
-          justify-content: center;
-          color: #666;
-          font-size: .2rem;
-          .iconfont{
-             font-size: .40rem;
-             line-height: 0.45rem;
-          }
-          button {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: none;
-            opacity:0;
-          }
-        }
-        .buy {
-            margin-right: .18rem;
-            background-image: -webkit-gradient(linear,left top,right top,from(#ff8e02),to(#fb314a));
-            background-image: linear-gradient(90deg,#ff8e02,#fb314a);
-            border-radius: 0.4rem;
-        }
-        .buy{
-          -webkit-box-flex: 1;
-          -webkit-flex: 1;
-          -moz-box-flex: 1;
-          -moz-flex: 1;
-          -ms-flex: 1;
-          flex: 1;
-          display: -webkit-box;
-          display: -webkit-flex;
-          display: -moz-flex;
-          display: -ms-flexbox;
-          display: flex;
-          -webkit-box-align: center;
-          -ms-flex-align: center;
-          -webkit-align-items: center;
-          -moz-align-items: center;
-          align-items: center;
-          -webkit-box-pack: center;
-          -ms-flex-pack: center;
-          -webkit-justify-content: center;
-          -moz-justify-content: center;
-          justify-content: center;
-          width: 20%;
-          height: 0.8rem;
-          font-size: .28rem;
-          font-weight: 500;
-          color: #fff;
-
-        }
-    }
- }
-
-
-
-}
-.mod-feeinclude {
-  margin-top: .18rem;
-  background: #fff;
-  padding-bottom: .24rem;
-  color: #666;
-  font-size: .24rem;
-  .cnt {
-    padding-left: .24rem;
-    padding-right: .24rem;
-  }
-  .content {
-    max-height: 176px;
-    overflow: hidden;
-    .item-wrap{
-      .item {
-        position: relative;
-        font-size: 14px;
-        &:last-child {
-            margin-bottom: 0;
-        }
-        .item-cnt p {
-          line-height: 22px;
-          word-break: break-all;
+          border: none;
+          opacity: 0;
         }
       }
-    }
-  }
-}
-.mod-notice {
-    margin-top: .18rem;
-    background: #fff;
-    color: #3d3d3d;
-    font-size: 14px;
-    line-height: 22px;
-    padding-bottom: .24rem;
-    .cnt {
-      padding-left: .24rem;
-      padding-right: .24rem;
-    }
-    .content {
-      max-height: 154px;
-      overflow: hidden;
-      color: #666;
-    }
-    .item-cnt>p {
-      word-break: break-all;
-    }
-    .see-more {
+      .buy {
+        margin-right: 0.18rem;
+        background-image: -webkit-gradient(
+          linear,
+          left top,
+          right top,
+          from(#ff8e02),
+          to(#fb314a)
+        );
+        background-image: linear-gradient(90deg, #ff8e02, #fb314a);
+        border-radius: 0.4rem;
+      }
+      .buy {
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        -moz-box-flex: 1;
+        -moz-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
         display: -webkit-box;
         display: -webkit-flex;
         display: -moz-flex;
@@ -1185,42 +1174,117 @@ export default {
         -webkit-justify-content: center;
         -moz-justify-content: center;
         justify-content: center;
-        font-size: 12px;
-        color: #a5a5a5;
+        width: 20%;
+        height: 0.8rem;
+        font-size: 0.28rem;
+        font-weight: 500;
+        color: #fff;
+      }
     }
+  }
 }
-.mod-insurance {
-    background: #fff;
-    padding-bottom: .24rem;
-    margin-top: .18rem;
+
+.mod-feeinclude {
+  margin-top: 0.18rem;
+  background: #fff;
+  padding-bottom: 0.24rem;
+  color: #666;
+  font-size: 0.24rem;
+  .cnt {
+    padding-left: 0.24rem;
+    padding-right: 0.24rem;
+  }
+  .content {
+    max-height: 176px;
+    overflow: hidden;
+    .item-wrap {
+      .item {
+        position: relative;
+        font-size: 14px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        .item-cnt p {
+          line-height: 22px;
+          word-break: break-all;
+        }
+      }
+    }
+  }
+}
+
+.mod-notice {
+  margin-top: 0.18rem;
+  background: #fff;
+  color: #3d3d3d;
+  font-size: 14px;
+  line-height: 22px;
+  padding-bottom: 0.24rem;
+  .cnt {
+    padding-left: 0.24rem;
+    padding-right: 0.24rem;
+  }
+  .content {
+    max-height: 154px;
+    overflow: hidden;
+    color: #666;
+  }
+  .item-cnt > p {
     word-break: break-all;
-    .cnt {
-      padding-left: .24rem;
-      padding-right: .24rem;
-    }
-    .note-wrap {
-      font-size: .24rem;
+  }
+  .see-more {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #a5a5a5;
+  }
+}
+
+.mod-insurance {
+  background: #fff;
+  padding-bottom: 0.24rem;
+  margin-top: 0.18rem;
+  word-break: break-all;
+  .cnt {
+    padding-left: 0.24rem;
+    padding-right: 0.24rem;
+  }
+  .note-wrap {
+    font-size: 0.24rem;
+    color: #3d3d3d;
+    line-height: 0.44rem;
+  }
+  .cell {
+    padding-bottom: 0.24rem;
+    .title {
+      font-size: 0.28rem;
       color: #3d3d3d;
-      line-height: .44rem;
+      line-height: 0.44rem;
+      margin-bottom: 0.12rem;
     }
-    .cell {
-      padding-bottom: .24rem;
-      .title {
-          font-size: .28rem;
-          color: #3d3d3d;
-          line-height: .44rem;
-          margin-bottom: .12rem;
-      }
-      .content-wrap {
-          background: #fbfbfb;
-          color: #666;
-          font-size: .28rem;
-          line-height: .44rem;
-          padding: .12rem 0 .12rem .5rem;
-      }
-      .content {
-          list-style-type: disc;
-      }
+    .content-wrap {
+      background: #fbfbfb;
+      color: #666;
+      font-size: 0.28rem;
+      line-height: 0.44rem;
+      padding: 0.12rem 0 0.12rem 0.5rem;
     }
+    .content {
+      list-style-type: disc;
+    }
+  }
 }
 </style>

@@ -1,11 +1,11 @@
 <!-- 首页 -->
 <template>
    <div>
-    <section class="search-box-wrapper">
+    <section class="search-box-wrapper" @click='toSearch()'>
       <div class="search-bg opacity-black">
         <img src='/static/img/bg/searchBg.jpg' alt="">
       </div>
-      <search-box ref="searchBox" @query="onQueryChange"  placeholder="搜索商家名、产品名或者路线">
+      <search-box ref="searchBox" @query="onQueryChange" readOnly="true"  placeholder="搜索商家名、产品名或者路线" >
         <template slot="left">
           <div class="search-left">
           <div class="addr"><span>成都</span><i class="iconfont icon-unfold"></i></div>
@@ -49,7 +49,7 @@ import SearchBox from 'components/search-box/search-box'
 import Tab from 'components/tab/tab'
 import TabItem from 'components/tab/tab-item'
 import Card from 'components/card/card'
-import {mapGetters, mapMutations} from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import Modal from 'components/modal/modal'
 
 export default {
@@ -67,22 +67,37 @@ export default {
       type: '1',
       freeGo: [],
       groupGo: [],
-      disabled: typeof navigator !== 'undefined' && /iphone/i.test(navigator.userAgent) && /ucbrowser/i.test(navigator.userAgent)
+      disabled:
+        typeof navigator !== 'undefined' &&
+        /iphone/i.test(navigator.userAgent) &&
+        /ucbrowser/i.test(navigator.userAgent)
     }
   },
   methods: {
     ...mapMutations({
       setVisible: 'SET_VISIBLE'
     }),
-    getPhoneNumber (e) {
-      api.postPhoneNum({encryptedData: e.mp.detail.encryptedData, iv: e.mp.detail.iv, id: this.oid}).then(res => {
-        console.log(res)
-        if (res.state === 'ok') {
-          console.log('手机号获取成功')
-        }
-      }).catch(errMsg => {
-        console.log(errMsg)
+    toSearch () {
+      wx.navigateTo({
+        url: '../../pages/search/main'
       })
+    },
+    getPhoneNumber (e) {
+      api
+        .postPhoneNum({
+          encryptedData: e.mp.detail.encryptedData,
+          iv: e.mp.detail.iv,
+          id: this.oid
+        })
+        .then(res => {
+          console.log(res)
+          if (res.state === 'ok') {
+            console.log('手机号获取成功')
+          }
+        })
+        .catch(errMsg => {
+          console.log(errMsg)
+        })
     },
     closeCall () {
       this.setVisible(false)
@@ -97,16 +112,19 @@ export default {
       this.onItemClick(oIndex)
     },
     onItemClick (index) {
-      this.tabItem = index// 获取选项卡索引
-      index === 0 ? this.type = '1' : this.type = '2'
+      this.tabItem = index // 获取选项卡索引
+      index === 0 ? (this.type = '1') : (this.type = '2')
 
       this.getIndex(this.type)
     },
     async getIndex (type) {
       try {
-        await api.getIndexData({type: type})
+        await api
+          .getIndexData({ type: type })
           .then(res => {
-            type === '1' ? this.freeGo = res.lists : this.groupGo = res.lists
+            type === '1'
+              ? (this.freeGo = res.lists)
+              : (this.groupGo = res.lists)
           })
           .catch(errMsg => {
             console.log(errMsg)
@@ -121,11 +139,7 @@ export default {
     this.setVisible(true)
   },
   computed: {
-    ...mapGetters([
-      'visible',
-      'canIUse',
-      'oid'
-    ]),
+    ...mapGetters(['visible', 'canIUse', 'oid']),
     getFreeGo () {
       return this.freeGo.length > 0
     },
@@ -133,7 +147,9 @@ export default {
       return this.groupGo.length > 0
     },
     getScrollHeigh () {
-      return this.type === '1' ? this.freeGo.length * 150 : this.groupGo.length * 150
+      return this.type === '1'
+        ? this.freeGo.length * 150
+        : this.groupGo.length * 150
     }
   },
   watch: {
@@ -141,55 +157,53 @@ export default {
       this.$emit('update:tabItem', val)
     }
   }
-
 }
 </script>
 
 <style scoped lang="less">
-@import "~common/less/variable";
-.search-box-wrapper{
-.search-bg{
-  position: absolute;
-  top: 0;
-  height: 1.26rem;
-  width: 100%;
-  z-index: -1;
-  img{
+@import '~common/less/variable';
+.search-box-wrapper {
+  .search-bg {
+    position: absolute;
+    top: 0;
+    height: 1.26rem;
     width: 100%;
-    height: 100%;
+    z-index: -1;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
-}
-.search-left{
+  .search-left {
     color: @color-dialog-background;
     font-size: @font-size-medium-x;
-    -webkit-box-flex:1;
--webkit-flex:1;
-flex:1;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
 
-    .addr{
+    .addr {
       display: flex;
       line-height: 44px;
-      color:#ffffff;
-      text-align:center;
-      span{
+      color: #ffffff;
+      text-align: center;
+      span {
         flex: 2;
       }
-      i{
+      i {
         flex: 1;
-        text-align: center
+        text-align: center;
       }
     }
   }
 }
-.tab-context{
+.tab-context {
   padding-bottom: 0;
   height: 100%;
-  swiper-item{
+  swiper-item {
     width: auto;
     height: 100%;
     border: 1rpx solid #ebebeb;
     box-sizing: border-box;
   }
 }
-
 </style>

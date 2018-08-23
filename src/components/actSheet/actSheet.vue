@@ -25,10 +25,10 @@
               </div>
               <div class="sku">
                 <div class="sku-title">成人</div>
-  
+                <div class="sku-price">￥{{adultPrice}}</div>
                 <div class="sku-subprops">
                   <input-num v-model="adultNum"></input-num>
-                </div>
+                </div> 
                 <!-- <div class="sku-subprops">
                       <span  :class="[{selected: !perType}, 'one-prop']" @click="toggle()">成人</span>
                       <span  :class="[{selected: perType}, 'one-prop']" @click="toggle()">儿童</span>
@@ -36,13 +36,14 @@
               </div>
               <div class="sku">
                 <div class="sku-title">儿童</div>
+                <div class="sku-price">￥{{childPrice}}</div>
                 <div class="sku-subprops">
                   <input-num v-model="childNum"></input-num>
                 </div>
               </div>
             </div>
           </div>
-          <div class="sku-selector-bottom" @click="selectorConfirm">确定</div>
+          <div class="sku-selector-bottom" @click="selectorConfirm()">确定</div>
         </div>
       </div>
     </section>
@@ -50,18 +51,20 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import InputNum from "components/input-num/input-num";
+import InputNum from 'components/input-num/input-num'
 
 export default {
-  data() {
+  data () {
     return {
       perType: true, // 选的是成人还是儿童
-      //perNum: 1,
+      // perNum: 1,
       adultNum: 1,
-      childNum: 1,
+      childNum: 0,
+      adultPrice: 0,
+      childPrice: 0,
       animationData: {},
       animationShowHeight: 500
-    };
+    }
   },
   props: {
     visible: {
@@ -77,62 +80,65 @@ export default {
     InputNum
   },
   model: {
-    prop: "visible",
-    event: "change"
+    prop: 'visible',
+    event: 'change'
   },
   watch: {
-    visible(val) {
+    visible (val) {
       if (val) {
-        this.showSku();
+        this.showSku()
+        this.adultPrice = Number(this.info.sale_price)
+        this.childPrice = Number(this.info.child_price)
       }
-      this.$emit("change", val);
+      this.$emit('change', val)
     }
   },
   computed: {
-    resultPrice() {
-      return this.info.sale_price * this.perNum;
+    resultPrice () {
+      // 这里的sale_price是成人价
+      return this.adultPrice * this.adultNum + this.childPrice * this.childNum
     }
   },
   methods: {
-    showSku() {
+    showSku () {
       // 显示遮罩层
       var animation = wx.createAnimation({
         duration: 200,
-        timingFunction: "linear",
+        timingFunction: 'linear',
         delay: 0
-      });
-      this.animation = animation;
-      animation.translateY(this.animationShowHeight).step();
-      this.animationData = animation.export();
+      })
+      this.animation = animation
+      animation.translateY(this.animationShowHeight).step()
+      this.animationData = animation.export()
       setTimeout(
-        function() {
-          animation.translateY(0).step();
-          this.animationData = animation.export();
+        function () {
+          animation.translateY(0).step()
+          this.animationData = animation.export()
         }.bind(this),
         200
-      );
+      )
     },
-    toggle() {
-      this.perType = !this.perType;
-    },
-    selectorConfirm() {
-      if (this.perNum === 0) {
-        this.visible = false;
+    selectorConfirm () {
+      if (this.childNum === 0 && this.adultNum === 0) {
+        this.visible = false
         this.$mptoast({
-          text: "出游人数不能为0哦~",
-          icon: "error",
+          text: '出游人数不能都为0哦~',
+          icon: 'error',
           duration: 2000
-        });
+        })
       } else {
-        this.$emit("confirm", {
-          perType: this.perType ? "儿童" : "成人",
-          perNum: this.perNum,
-          price: this.resultPrice
-        });
+        this.$emit('confirm', {
+          title: this.info.title,
+          adultNum: this.adultNum,
+          childNum: this.childNum,
+          adultPrice: this.adultPrice,
+          childPrice: this.childPrice,
+          totalPrice: this.resultPrice
+        })
       }
     }
   }
-};
+}
 </script>
 
 <style lang='less' scoped>
@@ -147,6 +153,15 @@ export default {
       font-size: 0.28rem;
       line-height: 0.4rem;
       margin-bottom: 0.18rem;
+      display: inline-block;
+    }
+    .sku-price {
+      color: #333;
+      font-size: 0.28rem;
+      line-height: 0.4rem;
+      margin-bottom: 0.18rem;
+      display: inline-block;
+      margin-left: 0.1rem;
     }
     .sku-subprops {
       position: absolute;
@@ -179,7 +194,7 @@ export default {
     &:after {
       pointer-events: none;
       position: absolute;
-      content: "";
+      content: '';
       height: 1px;
       background: #e0e0e0;
       left: 0;
@@ -406,7 +421,7 @@ export default {
 }
 
 .sku-selector-bg .g-sales-limit-discount:after {
-  content: "";
+  content: '';
   width: 0;
   height: 0;
   border-color: transparent transparent #fde750;
@@ -448,7 +463,7 @@ export default {
 .goods-like-button span:before,
 .goods-mall-button span:before,
 .goods-unlike-button span:before {
-  content: "";
+  content: '';
   top: -0.5rem;
 }
 </style>

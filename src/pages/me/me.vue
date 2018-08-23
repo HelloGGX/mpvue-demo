@@ -95,33 +95,33 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import Mptoast from "mptoast";
-import { mapGetters, mapMutations } from "vuex";
+import Mptoast from 'mptoast'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
-  data() {
+  data () {
     return {
       perId: 0
-    };
+    }
   },
   components: {
     Mptoast
   },
   methods: {
     ...mapMutations({
-      setNickName: "SET_NICKNAME",
-      setAvatarUrl: "SET_AVATARURL",
-      setCanIUse: "SET_CANIUSE"
+      setNickName: 'SET_NICKNAME',
+      setAvatarUrl: 'SET_AVATARURL',
+      setCanIUse: 'SET_CANIUSE'
     }),
-    bindGetUserInfo(e) {
+    bindGetUserInfo (e) {
       if (e.mp.detail.userInfo) {
-        this.setNickName(e.mp.detail.userInfo.nickName);
-        this.setAvatarUrl(e.mp.detail.userInfo.avatarUrl);
-        this.setCanIUse(false);
+        this.setNickName(e.mp.detail.userInfo.nickName)
+        this.setAvatarUrl(e.mp.detail.userInfo.avatarUrl)
+        this.setCanIUse(false)
       }
     },
-    toOrder(type) {
-      wx.navigateTo({ url: `../orders/main?id=${this.perId}&type=${type}` });
+    toOrder (type) {
+      wx.navigateTo({ url: `../orders/main?id=${this.perId}&type=${type}` })
     }
     // getUserInfo () {
     //   this.key = wx.getStorageSync('key')
@@ -136,16 +136,16 @@ export default {
     // }
   },
   computed: {
-    ...mapGetters(["nickName", "avatarUrl", "canIUse"])
+    ...mapGetters(['nickName', 'avatarUrl', 'canIUse'])
   }
-};
+}
 </script>
 <style lang='less' scoped>
 .bg-header {
   background-repeat: no-repeat;
   width: 100%;
   position: relative;
-  background-image: url("../../../static/img/bg/bg@2x.png");
+  background-image: url('../../../static/img/bg/bg@2x.png');
   background-size: cover;
   height: 3.33rem;
   .banner-me {
