@@ -45,7 +45,7 @@ export default {
     },
     search () {
       api
-        .search({
+        .getKeyData({
           keyword: this.query
         })
         .then(res => {

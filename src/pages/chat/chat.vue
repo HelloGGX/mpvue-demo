@@ -9,33 +9,35 @@
 
 <script type='text/ecmascript-6'>
 import CardChat from 'components/card-chat/card-chat'
-
+import api from 'api/api'
 export default {
   data () {
     return {
-      items: [{
-        id: '1',
-        title: '客服小姐姐1号',
-        type: '甜美萝莉音(海岛游)',
-        thumUrl: '/static/img/icon/timg.jpg'
-      }, {
-        id: '2',
-        title: '客服小姐姐2号',
-        type: '迷人御姐音(欧洲游)',
-        thumUrl: '/static/img/icon/timg.jpg'
-      }, {
-        id: '3',
-        title: '客服小姐姐3号',
-        type: '迷人御姐音(欧洲游)',
-        thumUrl: '/static/img/icon/timg.jpg'
-      }]
+      items: []
     }
   },
   components: {
     CardChat
+  },
+  mounted () {
+    this.getChat()
+  },
+  methods: {
+    getChat () {
+      api
+        .getChatData()
+        .then(res => {
+          console.log(res)
+          if (res.state === 'ok') {
+            this.items = res.lists
+          }
+        })
+        .catch(errMsg => {
+          console.log(errMsg)
+        })
+    }
   }
 }
 </script>
 <style lang='less' scoped>
-
 </style>

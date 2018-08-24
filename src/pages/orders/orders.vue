@@ -56,9 +56,12 @@ export default {
       const _thi = this
       this.$nextTick(function () {
         let query = wx.createSelectorQuery()
-        query.selectAll('.item-container').boundingClientRect(function (rects) {
-          _thi.tabHigh = rects[index].height
-        }).exec()
+        query
+          .selectAll('.item-container')
+          .boundingClientRect(function (rects) {
+            _thi.tabHigh = rects[index].height
+          })
+          .exec()
       })
     },
     switchItem (res) {
@@ -68,13 +71,32 @@ export default {
       this.setTabHigh(oIndex)
     },
     onItemClick (index) {
-      this.tabItem = index// 获取选项卡索引
+      this.tabItem = index // 获取选项卡索引
       this.type = index + 1
-      this.getOrders(this.type)
+      if (index === 2) {
+        this.getReserved(this.type)
+      } else {
+        this.getOrders(this.type)
+      }
+    },
+    async getReserved (type) {
+      try {
+        await api
+          .getReservedData({ type: type })
+          .then(res => {
+            this.reserved = res.lists
+          })
+          .catch(errMsg => {
+            console.log(errMsg)
+          })
+      } catch (e) {
+        console.log(e)
+      }
     },
     async getOrders (type) {
       try {
-        await api.getOrdersData({type: type})
+        await api
+          .getOrdersData({ type: type })
           .then(res => {
             switch (type) {
               case 1:
@@ -83,8 +105,6 @@ export default {
               case 2:
                 this.unpaid = res.lists
                 break
-              case 3:
-                this.reserved = res.lists
             }
           })
           .catch(errMsg => {

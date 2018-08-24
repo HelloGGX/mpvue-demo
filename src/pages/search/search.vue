@@ -8,85 +8,48 @@
     <div class="search-body">
         <scroll-view scroll-y class="scrollview">
           <div class="scroll-inner">
-            <div class="search-class">
+            <div class="search-class" v-if="!getResultLists">
                 <div class="search-title">
                   <span>搜索发现</span>
                 </div>
                 <div class="class">
-                  <img src="../../../static/img/icon/island.png" alt="">
+                  <img src="/static/img/icon/island.png" alt="">
                   <div class="class-container">
-                    <div class="class-item">
-                      <span>普吉岛</span>
-                    </div>
-                    <div class="class-item">
-                      <span>苏梅岛</span>
-                    </div>
-                    <div class="class-item">
-                      <span>巴厘岛</span>
-                    </div>
-                    <div class="class-item">
-                      <span>斐济岛</span>
-                    </div>
-                    <div class="class-item">
-                      <span>塞班岛</span>
-                    </div>
-                    <div class="class-item">
-                      <span>芽庄</span>
+                    <div class="class-item" v-for="(item, index) in island" :key="index">
+                      <span>{{item}}</span>
                     </div>
                   </div>
                 </div>
                 <div class="class">
-                  <img src="../../../static/img/icon/jw.png" alt="">
+                  <img src="/static/img/icon/jw.png" alt="">
                   <div class="class-container">
-                    <div class="class-item">
-                      <span>俄罗斯</span>
-                    </div>
-                    <div class="class-item">
-                      <span>檀香山</span>
-                    </div>
-                    <div class="class-item">
-                      <span>沙巴</span>
-                    </div>
-                    <div class="class-item">
-                      <span>日本</span>
-                    </div>
-                    <div class="class-item">
-                      <span>美国</span>
-                    </div>
-                    <div class="class-item">
-                      <span>越南</span>
+                   <div class="class-item" v-for="(item, index) in abroad" :key="index">
+                      <span>{{item}}</span>
                     </div>
                   </div>
                 </div>
                 <div class="class">
-                  <img src="../../../static/img/icon/jn.png" alt="">
+                  <img src="/static/img/icon/jn.png" alt="">
                   <div class="class-container">
-                    <div class="class-item">
-                      <span>上海</span>
-                    </div>
-                     <div class="class-item">
-                      <span>北京</span>
-                    </div>
-                     <div class="class-item">
-                      <span>广州</span>
-                    </div>
-                     <div class="class-item">
-                      <span>成都</span>
-                    </div>
-                    <div class="class-item">
-                      <span>杭州</span>
-                    </div>
-                    <div class="class-item">
-                      <span>武汉</span>
-                    </div>
-                    <div class="class-item">
-                      <span>南京</span>
-                    </div>
-                    <div class="class-item">
-                      <span>天津</span>
+                    <div class="class-item" v-for="(item, index) in territory" :key="index">
+                      <span>{{item}}</span>
                     </div>
                   </div>
                 </div>
+            </div>
+            <div class="search-lists" v-show="getResultLists">
+              <div class="weui-cells weui-cells_after-title">
+                <a class="weui-cell weui-cell_access" v-for="(item,index) in resultLists" :key="index">
+                  <div class="weui-cell__hd">
+                    <img src="/static/img/icon/addr.png" alt="" style="margin-right: 5px;vertical-align: middle;width:20px; height: 20px;">
+                  </div>
+                  <div class="weui-cell__bd search-item"><span>{{item.name}}</span></div>
+                  <div class="weui-cell__ft weui-cell__ft_in-access"></div>
+                </a>
+              </div>
+            </div>
+            <div class="search-detail">
+
             </div>
           </div>
         </scroll-view>
@@ -96,19 +59,45 @@
 
 <script type='text/ecmascript-6'>
 import SearchBox from 'components/search-box/search-box'
-
+import api from 'api/api'
 export default {
   data () {
     return {
-      result: []
+      resultLists: [],
+      territory: [], // 境内
+      abroad: [], // 境外
+      island: [] // 海岛
     }
   },
   components: {
     SearchBox
   },
+  mounted () {
+    this.getClass()
+  },
   methods: {
     searchResult (val) {
-      console.log(1)
+      this.resultLists = val
+    },
+    getClass () {
+      api
+        .getClass()
+        .then(res => {
+          if (res.state === 'ok') {
+            this.territory = res.terri
+            this.abroad = res.abroad
+            this.island = res.island
+          }
+        })
+        .catch(errMsg => {
+          console.log(errMsg)
+        })
+    }
+  },
+  computed: {
+    getResultLists () {
+      console.log(this.resultLists)
+      return this.resultLists.length > 0
     }
   }
 }
@@ -296,6 +285,13 @@ export default {
             }
           }
         }
+      }
+    }
+  }
+  .search-lists {
+    .search-item {
+      span {
+        font-size: 0.28rem;
       }
     }
   }

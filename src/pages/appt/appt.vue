@@ -20,6 +20,8 @@
       </div>
       <div class="line"></div>
       <div class="weui-cells weui-cells_after-title">
+        <picker-select  title="行程类型" :array="tripType" @select="selectType"></picker-select>
+        <input v-show="false" type="text" name="tripType" :value="trip">
         <div class="weui-cell weui-cell_input">
           <div class="weui-cell__hd">
             <div class="weui-label">目的地</div>
@@ -41,7 +43,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 import PickerSelect from 'base/picker/picker-select'
 import PickerDate from 'base/picker/picker-date'
 import api from 'api/api'
@@ -51,7 +53,16 @@ export default {
   data () {
     return {
       peopleNum: ['不限', '0', '1', '2', '3', '4'],
-      priceNum: ['501-1000', '1001-2000', '2001-3000', '3001-4000', '4001-5000', '5000以上'],
+      priceNum: [
+        '501-1000',
+        '1001-2000',
+        '2001-3000',
+        '3001-4000',
+        '4001-5000',
+        '5000以上'
+      ],
+      tripType: ['跟团游', '自由行'],
+      trip: '',
       startTime: null,
       endTime: null,
       adultNum: 0,
@@ -60,32 +71,37 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'nickName',
-      'canIUse',
-      'oid'
-    ])
+    ...mapGetters(['nickName', 'canIUse', 'oid'])
   },
   methods: {
     formSubmit (e) {
-      if (this.canIUse) { // 如果未授权
+      if (this.canIUse) {
+        // 如果未授权
         this.$mptoast({
           text: '请到个人中心授权',
           icon: 'error',
           duration: 2000
         })
-      } else { // 如果已经授权
-        api.postApptData({formData: e.mp.detail.value, openId: this.oid, nickName: this.nickName}).then(res => {
-          if (res.state === 'ok') {
-            this.$mptoast({
-              text: '预约成功',
-              icon: 'success',
-              duration: 4000
-            })
-          }
-        }).catch(errMsg => {
-          console.log(errMsg)
-        })
+      } else {
+        // 如果已经授权
+        api
+          .postApptData({
+            formData: e.mp.detail.value,
+            openId: this.oid,
+            nickName: this.nickName
+          })
+          .then(res => {
+            if (res.state === 'ok') {
+              this.$mptoast({
+                text: '预约成功',
+                icon: 'success',
+                duration: 4000
+              })
+            }
+          })
+          .catch(errMsg => {
+            console.log(errMsg)
+          })
       }
     },
     selectStartDate (v) {
@@ -102,6 +118,9 @@ export default {
     },
     selectPrice (v) {
       this.price = v
+    },
+    selectType (v) {
+      this.trip = v
     }
   },
   components: {
@@ -112,31 +131,37 @@ export default {
 }
 </script>
 <style lang='less' scoped>
-.appt-time{
-  color:#000;
+.appt-time {
+  color: #000;
 }
-.adult-num{
+.adult-num {
   float: right;
 }
-.btn-submit{
-  margin-top:0.6rem;
-  width:6rem;
-  text-align:center;
-  position:relative;
-  margin-left:auto;
-  margin-right:auto;
-  height:0.9rem;
+.btn-submit {
+  margin-top: 0.6rem;
+  width: 6rem;
+  text-align: center;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  height: 0.9rem;
   overflow: hidden;
-  background-image: -webkit-gradient(linear,left top,right top,from(#ff8e02),to(#fb314a));
-  background-image: linear-gradient(90deg,#ff8e02,#fb314a);
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#ff8e02),
+    to(#fb314a)
+  );
+  background-image: linear-gradient(90deg, #ff8e02, #fb314a);
   border-radius: 0.4rem;
 
-  p{
-    line-height:0.9rem;
-    color:#fff;
-    font-size:0.32rem;
+  p {
+    line-height: 0.9rem;
+    color: #fff;
+    font-size: 0.32rem;
   }
-  button{
+  button {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -145,16 +170,18 @@ export default {
     opacity: 0;
   }
 }
-.bg-step{
+.bg-step {
   padding: 37.25% 0 0;
   position: relative;
   img {
     position: absolute;
-    width: 100%; height: 100%;
-    left: 0; top: 0;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
   }
 }
-.addr{
+.addr {
   text-align: right;
 }
 </style>

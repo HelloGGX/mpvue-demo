@@ -3,7 +3,7 @@
     class="vux-tab-wrap">
     <div class="vux-tab-container">
       <div
-        class="vux-tab"
+        class="vux-tab sticky"
         :class="[{'vux-tab-no-animate': !animate},{ scrollable }]"
         ref="nav">
         <slot></slot>
@@ -62,13 +62,21 @@ export default {
   computed: {
     barLeft () {
       if (this.hasReady) {
-        const count = this.scrollable ? (window.innerWidth / this.$children[this.currentIndex || 0].$el.getBoundingClientRect().width) : this.number
+        const count = this.scrollable
+          ? window.innerWidth /
+            this.$children[this.currentIndex || 0].$el.getBoundingClientRect()
+              .width
+          : this.number
         return `${this.currentIndex * (100 / count)}%`
       }
     },
     barRight () {
       if (this.hasReady) {
-        const count = this.scrollable ? (window.innerWidth / this.$children[this.currentIndex || 0].$el.getBoundingClientRect().width) : this.number
+        const count = this.scrollable
+          ? window.innerWidth /
+            this.$children[this.currentIndex || 0].$el.getBoundingClientRect()
+              .width
+          : this.number
         return `${(count - this.currentIndex - 1) * (100 / count)}%`
       }
     },
@@ -101,7 +109,11 @@ export default {
       const step = () => {
         const scrollDuration = 15
         const nav = this.$refs.nav
-        nav.scrollLeft += (currentIndexTab.offsetLeft - (nav.offsetWidth - currentIndexTab.offsetWidth) / 2 - nav.scrollLeft) / scrollDuration
+        nav.scrollLeft +=
+          (currentIndexTab.offsetLeft -
+            (nav.offsetWidth - currentIndexTab.offsetWidth) / 2 -
+            nav.scrollLeft) /
+          scrollDuration
         if (++count < scrollDuration) {
           window.requestAnimationFrame(step)
         }
@@ -114,14 +126,13 @@ export default {
 
 
 <style lang="less">
-  @import "~common/less/variable";
+@import '~common/less/variable';
 
 @prefixClass: vux-tab;
 @easing-in-out: cubic-bezier(0.35, 0, 0.25, 1);
-@effect-duration: .3s;
+@effect-duration: 0.3s;
 
 .@{prefixClass} {
-
   &-ink-bar {
     position: absolute;
     height: 2px;
@@ -132,14 +143,13 @@ export default {
 
     &-transition-forward {
       transition: right @effect-duration @easing-in-out,
-      left @effect-duration @easing-in-out @effect-duration * 0.3;
+        left @effect-duration @easing-in-out @effect-duration * 0.3;
     }
     &-transition-backward {
       transition: right @effect-duration @easing-in-out @effect-duration * 0.3,
-      left @effect-duration @easing-in-out;
+        left @effect-duration @easing-in-out;
     }
   }
-
 }
 
 .vux-tab-bar-top .@{prefixClass} {
@@ -168,7 +178,8 @@ export default {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  background: linear-gradient(180deg, #e5e5e5, #e5e5e5, rgba(229, 229, 229, 0)) bottom left no-repeat;
+  background: linear-gradient(180deg, #e5e5e5, #e5e5e5, rgba(229, 229, 229, 0))
+    bottom left no-repeat;
   background-size: 100% 1px;
   font-size: 14px;
   text-align: center;
@@ -183,7 +194,13 @@ export default {
 
 .vux-tab-bar-top {
   .vux-tab .vux-tab-item {
-    background: linear-gradient(180deg, #e5e5e5, #e5e5e5, rgba(229, 229, 229, 0)) top left no-repeat;
+    background: linear-gradient(
+        180deg,
+        #e5e5e5,
+        #e5e5e5,
+        rgba(229, 229, 229, 0)
+      )
+      top left no-repeat;
     background-size: 100% 1px;
   }
   .vux-tab .vux-tab-item.vux-tab-selected {
@@ -260,5 +277,4 @@ export default {
 .scrollable .vux-tab-item {
   flex: 0 0 22%;
 }
-
 </style>

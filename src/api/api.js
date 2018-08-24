@@ -5,7 +5,7 @@ const request = new Request()
 export default {
   getIndexData (data) {
     // 查询所有首页数据
-    return request.get('getIndex.php', data)
+    return request.post('getIndex.php', data)
   },
   getDetailData (data) {
     // 获取详情页的数据
@@ -25,26 +25,37 @@ export default {
   },
   postGoodId (data) {
     // 点击日历返回价格
-    let dat = JSON.stringify(data)
-    return request.post('postGoodId.php', dat)
+    return request.post('postGoodId.php', data)
   },
   postApptData (data) {
     // 提交预约表单
-    let dat = JSON.stringify(data)
-    return request.post('postApptData.php', dat)
+    return request.post('postApptData.php', data)
   },
   getOrdersData (data) {
     // 获取订单数据
     return request.get('getOrdersData.php', data)
   },
+  getReservedData (data) {
+    // 获取预约的数据
+    return request.get('getReservedData.php', data)
+  },
+  cancelOrder (data) {
+    // 取消订单
+    return request.post('cancelOrder.php', data)
+  },
   postPhoneNum (data) {
     // 发送加密手机号
-    let dat = JSON.stringify(data)
-    return request.post('postPhoneNum.php', dat)
+    return request.post('postPhoneNum.php', data)
   },
-  search (data) {
-    // 搜索
-    let dat = JSON.stringify(data)
-    return request.post('search.php', dat)
+  getKeyData (data) {
+    return request.post('getKeyData.php', data)
+  },
+  getClass (data) {
+    // 获取搜索页面分类的数据
+    return request.get('getClass.php', data)
+  },
+  getChatData (data) {
+    // 获取聊天的客服数据
+    return request.get('getChatData.php', data)
   }
 }

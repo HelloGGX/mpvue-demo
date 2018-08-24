@@ -14,16 +14,16 @@
       </search-box>
     </section>
     <section class="main-wrapper">
-        <tab  v-model="tabItem">
+      <tab  v-model="tabItem">
           <tab-item selected >自由行</tab-item>
           <tab-item >跟团游</tab-item>
-        </tab>
-        <div :style="{'height': getScrollHeigh+'px'}">
-          <swiper  class="slider-group tab-context"  @change="switchItem" :current ="tabItem" duration="200" circular="true" skip-hidden-item-layout="true">
-              <swiper-item><card v-if="getFreeGo"  :lists="freeGo"></card></swiper-item>
-              <swiper-item><card  v-if="getGroupGo" :lists="groupGo"></card></swiper-item>
-          </swiper>
-        </div>
+      </tab>
+      <div :style="{'height': getScrollHeigh+'px'}">
+        <swiper  class="slider-group tab-context"  @change="switchItem" :current ="tabItem" duration="200" circular="true" skip-hidden-item-layout="true">
+          <swiper-item><card v-if="getFreeGo"  :lists="freeGo"></card></swiper-item>
+          <swiper-item><card  v-if="getGroupGo" :lists="groupGo"></card></swiper-item>
+        </swiper>
+      </div>
     </section>
     <modal v-model="visible" modalTit="绑定手机号" @closeCall="closeCall">
       <div slot="content">
@@ -162,6 +162,12 @@ export default {
 
 <style scoped lang="less">
 @import '~common/less/variable';
+.sticky-item {
+  height: 44px;
+  .i-sticky-title {
+    padding: 0;
+  }
+}
 .search-box-wrapper {
   .search-bg {
     position: absolute;
