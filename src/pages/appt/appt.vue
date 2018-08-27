@@ -39,15 +39,31 @@
       </view>
     </form>
     <mptoast></mptoast>
+    <modal v-model="visible" modalTit="绑定手机号">
+      <div slot="content">
+          <div>
+            <div class="bind-phone">
+              <button class="btn-phone" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"></button>
+              <i-button type="success" shape="circle">微信手机号一键绑定</i-button>
+            </div>
+            <div class="tip-txt"><p>绑定手机号代表同意《用户协议》和《隐私政策》</p></div>
+            <div class="tip-img">
+              <img src="/static/img/icon/phone.png" alt="">
+              <span>使用手机号绑定</span>
+            </div>
+          </div>
+      </div>
+    </modal>
   </div>
 </template>
 
 <script type='text/ecmascript-6'>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import PickerSelect from 'base/picker/picker-select'
 import PickerDate from 'base/picker/picker-date'
 import api from 'api/api'
 import Mptoast from 'mptoast'
+import Modal from 'components/modal/modal'
 
 export default {
   data () {
@@ -71,9 +87,36 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['nickName', 'canIUse', 'oid'])
+    ...mapGetters(['nickName', 'canIUse', 'oid', 'authPhone', 'visible'])
   },
   methods: {
+    ...mapMutations({
+      setVisible: 'SET_VISIBLE',
+      setAuthPhone: 'SET_AUTHPHONE'
+    }),
+    getPhoneNumber (e) {
+      api
+        .postPhoneNum({
+          encryptedData: e.mp.detail.encryptedData,
+          iv: e.mp.detail.iv,
+          id: this.oid
+        })
+        .then(res => {
+          console.log(res)
+          if (res.state === 'ok') {
+            this.setVisible(false)
+            this.$mptoast({
+              text: '手机号授权成功',
+              icon: 'success',
+              duration: 3000
+            })
+            this.setAuthPhone(true) // 把授权状态改为true
+          }
+        })
+        .catch(errMsg => {
+          console.log(errMsg)
+        })
+    },
     formSubmit (e) {
       if (this.canIUse) {
         // 如果未授权
@@ -82,6 +125,8 @@ export default {
           icon: 'error',
           duration: 2000
         })
+      } else if (!this.authPhone) {
+        this.setVisible(!this.authPhone)
       } else {
         // 如果已经授权
         api
@@ -126,7 +171,8 @@ export default {
   components: {
     PickerSelect,
     PickerDate,
-    Mptoast
+    Mptoast,
+    Modal
   }
 }
 </script>

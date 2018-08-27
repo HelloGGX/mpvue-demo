@@ -1,4 +1,5 @@
-const state = {// 状态管理
+const state = {
+  // 状态管理
   calendarList: [], // 获取异步数据
   oid: '', // 用户openId
   nickName: '用户名', // 用户的昵称

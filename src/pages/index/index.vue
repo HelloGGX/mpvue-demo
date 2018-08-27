@@ -25,7 +25,7 @@
         </swiper>
       </div>
     </section>
-    <modal v-model="visible" modalTit="绑定手机号" @closeCall="closeCall">
+    <modal v-model="visible" modalTit="绑定手机号">
       <div slot="content">
           <div>
             <div class="bind-phone">
@@ -40,6 +40,7 @@
           </div>
       </div>
     </modal>
+    <mptoast></mptoast>
    </div>
 </template>
 
@@ -50,6 +51,7 @@ import Tab from 'components/tab/tab'
 import TabItem from 'components/tab/tab-item'
 import Card from 'components/card/card'
 import { mapGetters, mapMutations } from 'vuex'
+import Mptoast from 'mptoast'
 import Modal from 'components/modal/modal'
 
 export default {
@@ -58,7 +60,8 @@ export default {
     Tab,
     TabItem,
     Card,
-    Modal
+    Modal,
+    Mptoast
   },
 
   data () {
@@ -75,7 +78,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setVisible: 'SET_VISIBLE'
+      setVisible: 'SET_VISIBLE',
+      setAuthPhone: 'SET_AUTHPHONE'
     }),
     toSearch () {
       wx.navigateTo({
@@ -90,19 +94,22 @@ export default {
           id: this.oid
         })
         .then(res => {
-          console.log(res)
           if (res.state === 'ok') {
-            console.log('手机号获取成功')
+            this.setVisible(false)
+            this.$mptoast({
+              text: '手机号授权成功',
+              icon: 'success',
+              duration: 3000
+            })
+
+            this.setAuthPhone(true) // 把授权状态改为true
           }
         })
         .catch(errMsg => {
           console.log(errMsg)
         })
     },
-    closeCall () {
-      this.setVisible(false)
-      // this.setVisible(true)
-    },
+
     init () {
       this.getIndex(this.type)
     },
@@ -136,10 +143,10 @@ export default {
   },
   mounted () {
     this.init()
-    this.setVisible(true)
+    this.setVisible(!this.authPhone)
   },
   computed: {
-    ...mapGetters(['visible', 'canIUse', 'oid']),
+    ...mapGetters(['visible', 'canIUse', 'oid', 'authPhone']),
     getFreeGo () {
       return this.freeGo.length > 0
     },

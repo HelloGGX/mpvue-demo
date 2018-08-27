@@ -334,6 +334,21 @@
     <!--底部弹出层-->
     <mptoast></mptoast>
     <scroll-top v-model="offsetTop" @scrollToTop="scrollToTop"></scroll-top>
+    <modal v-model="visible" modalTit="绑定手机号">
+      <div slot="content">
+          <div>
+            <div class="bind-phone">
+              <button class="btn-phone" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"></button>
+              <i-button type="success" shape="circle">微信手机号一键绑定</i-button>
+            </div>
+            <div class="tip-txt"><p>绑定手机号代表同意《用户协议》和《隐私政策》</p></div>
+            <div class="tip-img">
+              <img src="/static/img/icon/phone.png" alt="">
+              <span>使用手机号绑定</span>
+            </div>
+          </div>
+      </div>
+    </modal>
   </scroll-view>
 </template>
 
@@ -344,7 +359,9 @@ import Tab from 'components/tab/tab'
 import TabItem from 'components/tab/tab-item'
 import ScrollTop from 'base/scroll-top/scroll-top'
 import { throttle, isIphoneX, changeDate, del$ } from 'utils/tools'
+import { mapGetters, mapMutations } from 'vuex'
 import Mptoast from 'mptoast'
+import Modal from 'components/modal/modal'
 import ActSheet from 'components/actSheet/actSheet'
 
 export default {
@@ -368,12 +385,46 @@ export default {
     TabItem,
     ScrollTop,
     Mptoast,
-    ActSheet
+    ActSheet,
+    Modal
+  },
+  onShareAppMessage: function (res) {
+    console.log(res)
+    return {
+      title: this.goodInfo.title,
+      path: 'pages/detail/main?id=123'
+    }
   },
   onLoad () {
     this.toView = ''
   },
   methods: {
+    ...mapMutations({
+      setVisible: 'SET_VISIBLE',
+      setAuthPhone: 'SET_AUTHPHONE'
+    }),
+    getPhoneNumber (e) {
+      api
+        .postPhoneNum({
+          encryptedData: e.mp.detail.encryptedData,
+          iv: e.mp.detail.iv,
+          id: this.oid
+        })
+        .then(res => {
+          if (res.state === 'ok') {
+            this.setVisible(false)
+            this.$mptoast({
+              text: '手机号授权成功',
+              icon: 'success',
+              duration: 3000
+            })
+            this.setAuthPhone(true) // 把授权状态改为true
+          }
+        })
+        .catch(errMsg => {
+          console.log(errMsg)
+        })
+    },
     buyConfirm (v) {
       wx.navigateTo({
         url: `../trip-buy/main?id=1&title=${v.title}&adultNum=${
@@ -396,6 +447,8 @@ export default {
           icon: 'error',
           duration: 2000
         })
+      } else if (!this.authPhone) {
+        this.setVisible(!this.authPhone)
       } else {
         this.bottomVisible = true
       }
@@ -502,10 +555,12 @@ export default {
   },
   mounted () {
     this.goodid = this.$root.$mp.query.id
+    this.selectDay = ''
     this.getBannerHeight()
     this._getDetail()
   },
   computed: {
+    ...mapGetters(['visible', 'authPhone']),
     getShowPrice () {
       return del$(this.goodInfo.sale_price)
     },

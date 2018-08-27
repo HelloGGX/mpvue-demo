@@ -208,6 +208,9 @@
           </div>
         </div>
       </div>
+      <div style="transition-duration:0.2s;" class="overlay" v-show="upState">
+        
+      </div>
     </div>
   </div>
 </template>
@@ -225,7 +228,8 @@ export default {
       totalPrice: 0, // 总价
       date: '', // 出发日期
       animationData: {},
-      animationShowHeight: 100
+      animationShowHeight: 100,
+      upState: false
     }
   },
   components: {
@@ -252,6 +256,7 @@ export default {
       this.animation = animation
       animation.translateY(`${this.animationShowHeight}%`).step()
       this.animationData = animation.export()
+      this.upState = !this.upState
     }
   },
   mounted () {

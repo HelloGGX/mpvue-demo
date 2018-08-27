@@ -18,6 +18,7 @@
 </template>
 
 <script type='text/ecmascript-6'>
+import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
@@ -47,20 +48,20 @@ export default {
       this.$emit('change', val)
     }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    // ...mapMutations({
-    //   setVisible: 'SET_VISIBLE'
-    // }),
+    ...mapMutations({
+      setVisible: 'SET_VISIBLE'
+    }),
     powerDrawer (e) {
       var currentStatu = e.currentTarget.dataset.statu
       this.util(currentStatu)
+      this.setVisible(false)
       this.$emit('closeCall')
     },
     util (currentStatu) {
-    /* 动画部分 */
-    // 第1步：创建动画实例
+      /* 动画部分 */
+      // 第1步：创建动画实例
       var animation = wx.createAnimation({
         duration: 200, // 动画时长
         timingFunction: 'linear', // 线性
@@ -69,17 +70,26 @@ export default {
       // 第2步：这个动画实例赋给当前的动画实例
       this.animation = animation
       // 第3步：执行第一组动画
-      animation.opacity(0).rotateX(-100).step()
+      animation
+        .opacity(0)
+        .rotateX(-100)
+        .step()
       // 第4步：导出动画对象赋给数据对象储存
       this.animationData = animation.export()
       // 第5步：设置定时器到指定时候后，执行第二组动画
-      setTimeout(function () {
-        // 执行第二组动画
-        animation.opacity(1).rotateX(0).step()
-        // 给数据对象储存的第一组动画，更替为执行完第二组动画的动画对象
-        this.animationData = animation
-        // 关闭
-      }.bind(this), 200)
+      setTimeout(
+        function () {
+          // 执行第二组动画
+          animation
+            .opacity(1)
+            .rotateX(0)
+            .step()
+          // 给数据对象储存的第一组动画，更替为执行完第二组动画的动画对象
+          this.animationData = animation
+          // 关闭
+        }.bind(this),
+        200
+      )
     }
   }
 }
@@ -88,64 +98,62 @@ export default {
 <style lang='less' scoped>
 /*mask*/
 .drawer_screen_in {
-  visibility: visible!important;
-  opacity: 1!important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 .drawer_screen {
- width: 100%;
- height: 100%;
- position: fixed;
- top: 0;
- left: 0;
- z-index: 1000;
- visibility: hidden;
- background: rgba(0,0,0,.4);
- opacity: 0;
--webkit-transition-duration: .4s;
-transition-duration: .4s;
-will-change: opacity;
-contain: strict;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  visibility: hidden;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+  will-change: opacity;
+  contain: strict;
 }
 
 /*content*/
 .drawer_box {
- width:6rem;
-overflow:hidden;
-position:fixed;
-top:50%;
-left:50%;
-z-index:1001;
-background:#FAFAFA;
-border-radius:26rpx;
-display:block;
-margin-left:-3rem;
-margin-top:-3.25rem;
-
+  width: 6rem;
+  overflow: hidden;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1001;
+  background: #fafafa;
+  border-radius: 26rpx;
+  display: block;
+  margin-left: -3rem;
+  margin-top: -3.25rem;
 }
 
-.drawer_title{
- padding: 0.25rem;
- text-align: center;
- font-size:0.36rem;
- position: relative;
+.drawer_title {
+  padding: 0.25rem;
+  text-align: center;
+  font-size: 0.36rem;
+  position: relative;
   i {
-    position:absolute;
-    right:0.4rem;
-    top:0.2rem;
-    font-size:0.38rem;
+    position: absolute;
+    right: 0.4rem;
+    top: 0.2rem;
+    font-size: 0.38rem;
   }
 }
 .drawer_content {
- height: 210px;
- overflow-y: scroll; /*超出父盒子高度可滚动*/
+  height: 210px;
+  overflow-y: scroll; /*超出父盒子高度可滚动*/
 }
-.btn_ok{
-width:100%;
-height:0.88rem;
-text-align:center;
-line-height:0.88rem;
-font-size:0.32rem;
-border-top:1rpx solid #808080;
-
+.btn_ok {
+  width: 100%;
+  height: 0.88rem;
+  text-align: center;
+  line-height: 0.88rem;
+  font-size: 0.32rem;
+  border-top: 1rpx solid #808080;
 }
 </style>

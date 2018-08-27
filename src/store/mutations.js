@@ -20,7 +20,7 @@ const mutations = {
     state.visible = visible
   },
   [types.SET_AUTHPHONE] (state, authPhone) {
-    state.visible = authPhone
+    state.authPhone = authPhone
   }
 }
 

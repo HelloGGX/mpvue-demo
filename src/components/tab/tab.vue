@@ -1,9 +1,9 @@
 <template>
   <div
-    class="vux-tab-wrap">
+    class="vux-tab-wrap sticky">
     <div class="vux-tab-container">
       <div
-        class="vux-tab sticky"
+        class="vux-tab"
         :class="[{'vux-tab-no-animate': !animate},{ scrollable }]"
         ref="nav">
         <slot></slot>

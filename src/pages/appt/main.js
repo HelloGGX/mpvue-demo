@@ -6,6 +6,9 @@ app.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '预约'
+    navigationBarTitleText: '预约',
+    usingComponents: {
+      'i-button': '../../../static/iview/button/index'
+    }
   }
 }

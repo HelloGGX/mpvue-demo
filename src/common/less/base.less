@@ -2,7 +2,8 @@
 body,
 html {
   line-height: 1;
-  font-family: 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', arial, sans-serif, 'Droid Sans Fallback';
+  font-family: 'PingFang SC', 'STHeitiSC-Light', 'Helvetica-Light', arial,
+    sans-serif, 'Droid Sans Fallback';
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   background: @color-background;
@@ -27,7 +28,7 @@ html {
   background-color: #f2f2f2;
 }
 
-.base-bg>div {
+.base-bg > div {
   width: 100%;
   height: 100%;
   background-repeat: no-repeat;
@@ -172,7 +173,7 @@ swiper {
   padding: 10px 12px;
 }
 
-.cell>.cell-item {
+.cell > .cell-item {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
   -moz-box-flex: 1;
@@ -193,4 +194,14 @@ swiper {
   -moz-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+}
+
+.overlay {
+  position: fixed;
+  z-index: 8999;
+  top: -100px;
+  left: 0;
+  bottom: -100px;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.6);
 }
