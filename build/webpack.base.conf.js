@@ -6,11 +6,11 @@ var vueLoaderConfig = require('./vue-loader.conf')
 var MpvuePlugin = require('webpack-mpvue-asset-plugin')
 var glob = require('glob')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
-function getEntry (rootSrc, pattern) {
+function getEntry(rootSrc, pattern) {
   var files = glob.sync(path.resolve(rootSrc, pattern))
   return files.reduce((res, file) => {
     var info = path.parse(file)
@@ -33,21 +33,23 @@ module.exports = {
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+    publicPath:
+      process.env.NODE_ENV === 'production'
+        ? config.build.assetsPublicPath
+        : config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      'vue': 'mpvue',
+      vue: 'mpvue',
       '@': resolve('src'),
-      'common': resolve('src/common'),
-      'components': resolve('src/components'),
-      'base': resolve('src/base'),
-      'api': resolve('src/api'),
-      'utils':resolve('src/utils'),
-      'vendor':resolve('src/vendor')
+      common: resolve('src/common'),
+      components: resolve('src/components'),
+      base: resolve('src/base'),
+      api: resolve('src/api'),
+      utils: resolve('src/utils'),
+      vendor: resolve('src/vendor'),
+      iview: resolve('static/iview')
     },
     symlinks: false,
     aliasFields: ['mpvue', 'weapp', 'browser'],
@@ -79,7 +81,7 @@ module.exports = {
             options: {
               checkMPEntry: true
             }
-          },
+          }
         ]
       },
       {
@@ -108,7 +110,5 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new MpvuePlugin()
-  ]
+  plugins: [new MpvuePlugin()]
 }

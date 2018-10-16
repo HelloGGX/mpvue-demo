@@ -13,7 +13,8 @@
       <div class="chat-btn-wrap">
         <div class="chat-btn">
           <p>开始联系</p>
-          <button open-type="contact"></button>
+          <button v-if="getPhone" open-type="contact"></button>
+          <button v-else @click="phoneCall(phone)"></button>
         </div>
       </div>
   </div>
@@ -37,6 +38,22 @@ export default {
     thumUrl: {
       type: String,
       default: '/static/img/icon/timg.jpg'
+    },
+    phone: {
+      type: String,
+      default: ''
+    }
+  },
+  methods: {
+    phoneCall (phone) {
+      wx.makePhoneCall({
+        phoneNumber: phone
+      })
+    }
+  },
+  computed: {
+    getPhone (val) {
+      return this.phone === ''
     }
   }
 }

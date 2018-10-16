@@ -1,18 +1,10 @@
 <template>
-  <div
-    class="vux-tab-wrap sticky">
+  <div class="vux-tab-wrap sticky">
     <div class="vux-tab-container">
-      <div
-        class="vux-tab"
-        :class="[{'vux-tab-no-animate': !animate},{ scrollable }]"
-        ref="nav">
+      <div class="vux-tab" :class="[{'vux-tab-no-animate': !animate},{ scrollable }]" ref="nav">
         <slot></slot>
-        <div
-          v-if="animate"
-          class="vux-tab-ink-bar"
-          :class="{ 'vux-tab-ink-bar-transition-forward': direction === 'forward',
-        'vux-tab-ink-bar-transition-backward': direction === 'backward'}"
-          :style="{ left: barLeft,
+        <div v-if="animate" class="vux-tab-ink-bar" :class="{ 'vux-tab-ink-bar-transition-forward': direction === 'forward',
+        'vux-tab-ink-bar-transition-backward': direction === 'backward'}" :style="{ left: barLeft,
         right: barRight,
         display: 'block',
         height: lineWidth + 'px'

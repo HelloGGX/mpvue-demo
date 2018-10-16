@@ -6,9 +6,9 @@ app.$mount()
 
 export default {
   config: {
-    navigationBarBackgroundColor: '#1b97b9',
-    navigationBarTitleText: '说走就走',
-    navigationBarTextStyle: 'white',
+    navigationBarBackgroundColor: '#ffdc2a',
+    navigationBarTitleText: '酷奇旅行',
+    navigationBarTextStyle: 'black',
     usingComponents: {
       'i-button': '../../../static/iview/button/index'
     }

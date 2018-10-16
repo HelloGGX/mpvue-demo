@@ -35,6 +35,10 @@ export default {
     // 获取订单数据
     return request.get('getOrdersData.php', data)
   },
+  getOrderDetail (data) {
+    // 获取订单数据
+    return request.get('getOrderDetail.php', data)
+  },
   getReservedData (data) {
     // 获取预约的数据
     return request.get('getReservedData.php', data)
@@ -54,8 +58,50 @@ export default {
     // 获取搜索页面分类的数据
     return request.get('getClass.php', data)
   },
+  getSearchClass (data) {
+    // 获取搜索页面分类的数据
+    return request.get('getSearchClass.php', data)
+  },
   getChatData (data) {
     // 获取聊天的客服数据
     return request.get('getChatData.php', data)
+  },
+  getPay (data) {
+    // 支付接口
+    return request.post('getPay.php', data)
+  },
+  postPay (data) {
+    // 支付成功后发送产品参数
+    return request.post('postPay.php', data)
+  },
+  getSearchDetail (data) {
+    // 获取搜索详情列表
+    return request.get('getSearchDetail.php', data)
+  },
+
+  getOldPassager (data) {
+    // 获取已经填写过的游客信息
+    return request.get('getOldPassager.php', data)
+  },
+  postPassager (data) {
+    // 获取已经填写过的游客信息
+    return request.post('postPassager.php', data)
+  },
+  deletePassager (data) {
+    // 删除出行人信息
+    return request.post('deletePassager.php', data)
+  },
+  postFilter (data) {
+    // 发送筛选信息
+    return request.post('postFilter.php', data)
+  },
+  postClassify (data) {
+    // 发送排序及相关信息
+    return request.post('postClassify.php', data)
+  },
+  getShareInfo (data) {
+    // 获取分享openid
+    console.log(data)
+    return request.get('getShareInfo.php', data)
   }
 }

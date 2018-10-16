@@ -1,121 +1,144 @@
 <!-- 订单列表模板 -->
 <template>
-  <div class="order-item">
-  <div class="module seller">
-    <div class="o-t-title-shop">
-      <div class="tcont">
-        <div class="ico">
-          <img lazy-load src="//img.alicdn.com/tps/TB1WP4JPVXXXXXOaXXXXXXXXXXX-32-32.png">
-        </div>
-        <div class="contact">
-          <a href="//shop.m.taobao.com/shop/shop_index.htm?user_id=670365218">
-            <p class="title">
-              自由行
-            </p>
-            <p class="arrow">
-              <i class="iconfont icon-enter"></i>
-            </p>
-          </a>
-        </div>
-        <div class="state">
-          <div class="state-cont">
-            <p class="h">
-              等待买家付款
-            </p>
-            <p class="gray">
-            </p>
+  <scroll-view scroll-y @scrolltolower="loadMore" style="height:100%">
+    <div class="order-container">
+      <div class="order-item" v-for="(item, index) in lists" :index="index" :key="item.id">
+        <div class="module seller">
+          <div class="o-t-title-shop">
+            <div class="tcont">
+              <div class="contact">
+                <a>
+                  <p class="title">
+                    {{item.orders_type}}
+                  </p>
+                  <p class="arrow">
+                    <i class="iconfont icon-enter"></i>
+                  </p>
+                  <p class="title-regdate" v-if="type!=='reserved'">
+                    下单时间:{{item.orders_regdate}}
+                  </p>
+                </a>
+              </div>
+              <div class="state">
+                <div class="state-cont">
+                  <p class="h">
+                    {{item.orders_pay_state}}
+                  </p>
+                  <p class="gray">
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="module item">
-    <div class="item-list o-t-item">
-      <div class="item-img">
-        <p>
-          <img lazy-load src="//gw.alicdn.com/tfscom/TB1AfYzJVXXXXcxXFXXorbaIVXX-80-80.jpg_q75">
-        </p>
-      </div>
-      <div class="item-info">
-        <h3 class="title">
-          歌诗达邮轮赛琳娜号 游轮旅游日本旅游 2018年上海出发
-        </h3>
-        <p class="sku">
-          成人出行日期:2018-08-25
-        </p>
-      </div>
-      <div class="item-pay">
-        <div class="item-pay-data">
-          <p class="price">
-            ￥1799.00
-          </p>
-          <p class="price">
-            <del class="">
-              ￥2799.00
-            </del>
-          </p>
-          <p class="nums">
-            x1
-          </p>
+        <div class="module item">
+          <a class="item-list o-t-item" :href="type!=='reserved' ?'../order-detail/main?id='+ item.orders_id +'':''">
+            <div v-if="type!=='reserved'" class="item-img" :style="{backgroundImage:'url( ' + item.orders_image + ') '}"></div>
+            <div v-if="type==='reserved'" class="item-img"></div>
+            <div class="item-info">
+              <h3 class="title">
+                {{item.orders_cp_name}}
+              </h3>
+              <p class="sku" v-if="item.orders_cp_date">
+                出行日期:{{item.orders_cp_date}}
+              </p>
+              <p class="sku" v-if="item.orders_start_date">
+                开始日期：{{item.orders_start_date}}
+              </p>
+              <p class="sku" v-if="item.orders_end_date">
+                结束日期：{{item.orders_end_date}}
+              </p>
+              <p class="sku">
+                <div class="sku-span">
+                  <span>成人:{{item.orders_crxs_price}}x{{item.orders_adult_num}}</span>
+                </div>
+                <div class="sku-span">
+                  <span>儿童:{{item.orders_etxs_price}}x{{item.orders_child_num}}</span>
+                </div>
+              </p>
+            </div>
+            <div class="item-pay">
+              <div class="item-pay-data" v-if="type!=='reserved'">
+                <p class="price">
+                  ￥{{item.orders_crxs_price}}
+                </p>
+                <!-- <p class="price">
+                  <del class="">
+                    ￥2799.00
+                  </del>
+                </p> -->
+                <p class="nums">
+                  x{{item.orders_num}}
+                </p>
+              </div>
+            </div>
+          </a>
         </div>
+        <div class="module pay">
+          <div class="o-total-price">
+            <div class="cont">
+              <span>共1件商品</span>
+              <span> 合计:￥{{item.orders_total}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="module orderop" v-show="type!=='paid'">
+          <div class="o-tab-btn clearfix">
+            <ul class="clearfix">
+              <li class="h" v-show="type==='unpaid'" @click="pay(item)">
+                付款
+              </li>
+              <li v-show="type==='unpaid'" @click="show(item)">
+                取消订单
+              </li>
+              <li v-show="type==='reserved'">
+                联系客服
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
     </div>
-  </div>
-  <div class="module pay">
-    <div class="o-total-price">
-      <div class="cont">
-        <span>共1件商品</span>
-        <span> 合计:￥1799.00</span>
-      </div>
-    </div>
-  </div>
-  <div class="module orderop" v-show="type!=='paid'">
-    <div class="o-tab-btn clearfix">
-      <ul class="clearfix">
-        <li class="h" name="pay" v-show="type==='unpaid'">
-          付款
-        </li>
-        <li class="" name="cancelOrder" v-show="type==='unpaid'">
-          取消订单
-        </li>
-         <li class="" name="reserved" v-show="type==='reserved'">
-          联系客服
-        </li>
-      </ul>
-    </div>
-  </div>
-   <!--底部弹出层-->
-    <mptoast></mptoast>
-  </div>
+  </scroll-view>
 </template>
 
 <script type='text/ecmascript-6'>
 import { mapGetters } from 'vuex'
 import api from 'api/api'
-import Mptoast from 'mptoast'
+
 export default {
   data () {
     return {
-      orderId: ''
+      order_id: ''
     }
   },
   props: {
     type: {
       type: String,
       default: 'paid'
+    },
+    lists: {
+      type: Array,
+      default: () => []
     }
   },
-  components: {
-    Mptoast
-  },
+  components: {},
   computed: {
     ...mapGetters(['oid'])
   },
   methods: {
+    loadMore () {
+      this.$emit('loadMore')
+    },
     cancelOrder () {
       api
-        .cancelOrder({ openId: this.oid, orderId: this.orderId })
-        .then(res => {})
+        .cancelOrder({ oid: this.oid, orderId: this.order_id })
+        .then(res => {
+          if (res.state === 'ok') {
+            this.$emit('cancelState', true)
+          }
+        })
         .catch(errMsg => {
           this.$mptoast({
             text: errMsg,
@@ -123,15 +146,75 @@ export default {
             duration: 2000
           })
         })
+    },
+    pay (item) {
+      api
+        .getPay({
+          oid: this.oid,
+          orderId: item.orders_id,
+          type: 'order'
+        })
+        .then(res => {
+          let orderId = res.orderId
+          wx.requestPayment({
+            timeStamp: res.timeStamp,
+            nonceStr: res.nonceStr,
+            package: res.package,
+            signType: res.signType,
+            paySign: res.paySign,
+            success: res => {
+              this.$mptoast({
+                text: '支付成功',
+                icon: 'success',
+                duration: 2000
+              })
+              api
+                .postPay({
+                  oid: this.oid,
+                  orderId: orderId
+                })
+                .then(res => {
+                  if (res.state === 'ok') {
+                    wx.navigateTo({
+                      url: '../orders/main'
+                    })
+                  }
+                })
+                .catch(erMsg => {})
+            },
+            fail: res => {
+              this.$mptoast({
+                text: '支付失败',
+                icon: 'error',
+                duration: 2000
+              })
+            },
+            complete: res => {}
+          })
+        })
+        .catch(errMsg => {
+          console.log(errMsg)
+        })
+    },
+    handleOk () {
+      this.cancelOrder()
+    },
+    show (item) {
+      this.order_id = item.orders_id
+      this.$emit('visible', true)
     }
   }
 }
 </script>
 <style lang='less' scoped>
-.order-item {
-  border-bottom: 0.01rem solid #e7e7e7;
-  position: relative;
+.order-container {
+  height: 100%;
+  .order-item {
+    border-bottom: 0.01rem solid #e7e7e7;
+    position: relative;
+  }
 }
+
 .o-t-title-shop {
   height: 0.8rem;
   padding: 0 0.24rem;
@@ -198,6 +281,28 @@ export default {
       -o-box-flex: 1;
       box-flex: 1;
     }
+    .title-regdate {
+      line-height: 0.5rem;
+      text-align: left;
+      overflow: hidden;
+      -webkit-line-clamp: 1;
+      -moz-line-clamp: 1;
+      -ms-line-clamp: 1;
+      -o-line-clamp: 1;
+      line-clamp: 1;
+      -webkit-box-orient: vertical;
+      -ms-box-orient: vertical;
+      -o-box-orient: vertical;
+      box-orient: vertical;
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-box;
+      display: -o-box;
+      display: box;
+      word-break: break-all;
+      color: #666666;
+      margin-left: 20rpx;
+    }
   }
   .tcont {
     width: 100%;
@@ -256,6 +361,9 @@ export default {
     display: box;
     background: #fff;
     overflow: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('../../../static/img/bg/car_road.png');
     img {
       max-width: 100%;
       -webkit-transform: translateZ(0);
@@ -303,6 +411,10 @@ export default {
       display: -o-box;
       display: box;
       word-break: break-all;
+    }
+    .sku-span {
+      display: inline-block;
+      margin-left: 0.1rem;
     }
   }
   .item-pay {

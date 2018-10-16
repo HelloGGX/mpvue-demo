@@ -12,31 +12,31 @@
         </div>
         <div class="banner-bottom">
           <div class="btn-login" v-if="canIUse">
-              <span>点击登陆</span>
-              <button  open-type="getUserInfo" @getuserinfo="bindGetUserInfo"></button>
+            <span>点击登陆</span>
+            <button open-type="getUserInfo" @getuserinfo="bindGetUserInfo"></button>
           </div>
           <div class="weui-flex" v-else>
             <div class="weui-flex__item">
               <div class="banner-bottom-item">
-                 <p>0</p>
+                <p>0</p>
               </div>
               <p>积分</p>
             </div>
             <div class="weui-flex__item">
               <div class="banner-bottom-item">
-                 <p>0</p>
+                <p>0</p>
               </div>
               <p>门店储值</p>
             </div>
             <div class="weui-flex__item">
               <div class="banner-bottom-item">
-                 <p>0</p>
+                <p>0</p>
               </div>
               <p>优惠券</p>
             </div>
             <div class="weui-flex__item">
               <div class="banner-bottom-item">
-                 <p>0</p>
+                <p>0</p>
               </div>
               <p>排名</p>
             </div>
@@ -46,47 +46,47 @@
     </div>
     <section class="sec-order">
       <div class="journey-title weex-ct weex-div">
-          <div class="journey-title-icon weex-ct weex-div"></div>
-          <p class="journey-title-text weex-el weex-text margin">
-             我的订单
-          </p>
+        <div class="journey-title-icon weex-ct weex-div"></div>
+        <p class="journey-title-text weex-el weex-text margin">
+          我的订单
+        </p>
       </div>
       <div class="order-opts">
-          <div class="weui-flex">
-            <div class="weui-flex__item order-opt" @click="toOrder('1')">
-              <div class="order-opt-img">
-                 <img src="/static/img/icon/payoff.png" alt="">
-              </div>
-              <p>待支付</p>
+        <div class="weui-flex">
+          <div class="weui-flex__item order-opt" @click="toOrder('1')">
+            <div class="order-opt-img">
+              <img src="/static/img/icon/pay.png" alt="">
             </div>
-            <div class="weui-flex__item order-opt"  @click="toOrder('2')">
-               <div class="order-opt-img">
-                 <img src="/static/img/icon/pay.png" alt="">
-               </div>
-              <p>已支付</p>
-            </div>
-            <div class="weui-flex__item order-opt"  @click="toOrder('3')">
-              <div class="order-opt-img">
-                <img src="/static/img/icon/order.png" alt="">
-              </div>
-              <p>已预约</p>
-            </div>
-            <div class="weui-flex__item order-opt">
-              <div class="order-opt-img">
-                <img src="/static/img/icon/kf.png" alt="">
-              </div>
-              <p>联系客服</p>
-            </div>
+            <p>已支付</p>
           </div>
+          <div class="weui-flex__item order-opt" @click="toOrder('2')">
+            <div class="order-opt-img">
+              <img src="/static/img/icon/payoff.png" alt="">
+            </div>
+            <p>待支付</p>
+          </div>
+          <div class="weui-flex__item order-opt" @click="toOrder('3')">
+            <div class="order-opt-img">
+              <img src="/static/img/icon/order.png" alt="">
+            </div>
+            <p>已预约</p>
+          </div>
+          <div class="weui-flex__item order-opt">
+            <div class="order-opt-img">
+              <img src="/static/img/icon/kf.png" alt="">
+            </div>
+            <p>联系客服</p>
+          </div>
+        </div>
       </div>
     </section>
     <div class="line"></div>
     <section class="sec-application">
       <div class="journey-title weex-ct weex-div">
-          <div class="journey-title-icon weex-ct weex-div"></div>
-          <p class="journey-title-text weex-el weex-text margin">
-             我的应用
-          </p>
+        <div class="journey-title-icon weex-ct weex-div"></div>
+        <p class="journey-title-text weex-el weex-text margin">
+          我的应用
+        </p>
       </div>
     </section>
     <mptoast></mptoast>
@@ -97,6 +97,7 @@
 <script type='text/ecmascript-6'>
 import Mptoast from 'mptoast'
 import { mapGetters, mapMutations } from 'vuex'
+import api from 'api/api'
 
 export default {
   data () {
@@ -106,6 +107,38 @@ export default {
   },
   components: {
     Mptoast
+  },
+  onLoad () {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
+  },
+  onShareAppMessage () {
+    const _thi = this
+    return {
+      title: _thi.nickName + '向你分享了小程序',
+      path: `pages/me/main`,
+      success () {
+        // 转发成功
+
+        api
+          .getShareInfo({
+            openId: _thi.oid,
+            pageName: 'me'
+          })
+          .then(res => {
+            if (res.state === 'ok') {
+              return true
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+      fail (res) {
+        // 转发失败
+      }
+    }
   },
   methods: {
     ...mapMutations({
@@ -136,7 +169,7 @@ export default {
     // }
   },
   computed: {
-    ...mapGetters(['nickName', 'avatarUrl', 'canIUse'])
+    ...mapGetters(['nickName', 'avatarUrl', 'canIUse', 'oid'])
   }
 }
 </script>

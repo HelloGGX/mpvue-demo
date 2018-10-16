@@ -21,6 +21,9 @@ const mutations = {
   },
   [types.SET_AUTHPHONE] (state, authPhone) {
     state.authPhone = authPhone
+  },
+  [types.SET_NET] (state, net) {
+    state.net = net
   }
 }
 

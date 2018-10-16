@@ -1,87 +1,85 @@
 <!--  -->
 <template>
-  <div class="card-list-wrap">
-      <div class="card-list-inner">
-        <div class="card-list-container"  >
-          <section class="card-ct card-cell"  v-for="(item,index) in lists" :key="index">
-                <div class="com-choice-item card-ct card-div">
-                  <a class="card-item card-ct card-a" @click="handleClick(item)">
-                  <div class="card-el card-image item-image" :style="{backgroundImage:'url(' + item.image_url + ')'}"></div>
-                  <div class="category-tag card-ct card-div">
-                    <p class="tag-text card-el card-text">{{item.type}}</p>
+    <scroll-view scroll-y  @scrolltolower="loadMore" style="height:100%">
+      <div class="card-list-container">
+        <section class="card-ct card-cell" v-for="(item,index) in lists" :key="index">
+          <div class="com-choice-item card-ct card-div">
+            <a class="card-item card-ct card-a" @click="handleClick(item)">
+              <div class="card-el card-image item-image" :style="{backgroundImage:'url(' + item.image_url + ')'}"></div>
+              <div class="category-tag card-ct card-div">
+                <p class="tag-text card-el card-text">{{item.type}}</p>
+              </div>
+              <div class=" card-ct card-div image-desc">
+                <p class="image-text card-el card-text">成都等多地出发</p>
+              </div>
+              <div class="item-content card-ct card-div">
+                <div class="wxc-special-rich-text card-ct card-div">
+                  <div class="tag-div card-ct card-div">
                   </div>
-                  <div class=" card-ct card-div image-desc">
-                      <p class="image-text card-el card-text">成都等多地出发</p>
-                  </div>
-                  <div class="item-content card-ct card-div">
-                      <div class="wxc-special-rich-text card-ct card-div">
-                        <div class="tag-div card-ct card-div">
-                        </div>
-                        <p class=" card-el card-text wxc-text ellip-2" :style="{marginBottom:'10rpx'}">{{item.title}}</p>
-                      </div>
-                      <div class=" card-ct card-div">
-                        <div class="wxc-rich-text card-ct card-div">
-                          <div class=" card-ct card-div">
-                              <div class="wxc-image card-el card-image" :style="{backgroundImage:'url(//gw.alicdn.com/tfs/TB1lAjhfuuSBuNjy1XcXXcYjFXa-98-32.png)'}"></div>
-                          </div>
-                          <div  class=" card-ct card-div">
-                            <div  class=" card-ct card-div wxc-tag item-tag" :style="{borderColor: 'rgb(221, 221, 221)'}">
-                              <p class=" card-el card-text tag-text " :style="{fontSize: '26rpx', color: 'rgb(153, 153, 153)'}">{{item.long_day}}天{{item.long_night}}晚</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class=" card-ct card-div one-desc">
-                        <div class="wxc-rich-text card-ct card-div">
-                          <div  class=" card-ct card-div">
-                            <p class=" card-el card-text wxc-text gray margin-text">班期:暑假 中秋 国庆 天天出发</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div  class=" card-ct card-div">
-                        <div class="wxc-rich-text card-ct card-div">
-                          <div class=" card-ct card-div">
-                            <div class=" card-ct card-div wxc-tag item-tag" :style="{borderColor: 'rgb(68, 219, 94)', backgroundColor: 'rgb(68, 219, 94)', paddingLeft: '0', paddingRight: '0'}">
-                              <p  class=" card-el card-text tag-text" :style="{fontSize: '28rpx', color: 'rgb(255, 255, 255)'}">游</p>
-                            </div>
-                          </div>
-                          <div  class=" card-ct card-div">
-                             <p class=" card-el card-text wxc-text margin-text">情侣 蜜月</p>
-                          </div>
-                          </div>
-                      </div>
-                      <div  class=" card-ct card-div">
-                        <div class="wxc-rich-text card-ct card-div">
-                          <div class=" card-ct card-div">
-                            <div class=" card-ct card-div wxc-tag item-tag" :style="{borderColor: 'rgb(48, 160, 255)', backgroundColor: 'rgb(48, 160, 255)', paddingLeft: '0', paddingRight: '0'}">
-                              <p  class=" card-el card-text tag-text" :style="{fontSize: '28rpx', color: 'rgb(255, 255, 255)'}">评</p>
-                            </div>
-                          </div>
-                          <div  class=" card-ct card-div">
-                             <p class=" card-el card-text wxc-text margin-text">服务挺棒 风光不错 服务环境好</p>
-                          </div>
-                          </div>
-                      </div>
-                      <div class="item-price card-ct card-div">
-                        <div class=" card-ct card-div">
-                          <p class="default-text card-el card-text"></p>
-                        </div>
-                        <div class="price-num card-ct card-div">
-                          <span >
-                            <p class="price card-el card-text">￥{{item.sale_price}}</p>
-                          </span>
-                          <span class="market-price">
-                            <del>￥{{item.cost_price}}</del>
-                          </span>
-                        </div>
-                      </div>
-                  </div>
-                  </a>
+                  <p class=" card-el card-text wxc-text ellip-2" :style="{marginBottom:'10rpx'}">{{item.title}}</p>
                 </div>
-          </section>
-        </div>
+                <div class=" card-ct card-div">
+                  <div class="wxc-rich-text card-ct card-div">
+                    <div class=" card-ct card-div">
+                      <div class="wxc-image card-el card-image"></div>
+                    </div>
+                    <div class=" card-ct card-div">
+                      <div class=" card-ct card-div wxc-tag item-tag" :style="{borderColor: 'rgb(221, 221, 221)'}">
+                        <p class=" card-el card-text tag-text " :style="{fontSize: '26rpx', color: 'rgb(153, 153, 153)'}">{{item.long_day}}天{{item.long_night}}晚</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class=" card-ct card-div one-desc">
+                  <div class="wxc-rich-text card-ct card-div">
+                    <div class=" card-ct card-div">
+                      <p class=" card-el card-text wxc-text gray margin-text">班期:{{item.godate}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class=" card-ct card-div">
+                  <div class="wxc-rich-text card-ct card-div">
+                    <div class=" card-ct card-div">
+                      <div class=" card-ct card-div wxc-tag item-tag" :style="{borderColor: 'rgb(68, 219, 94)', backgroundColor: 'rgb(68, 219, 94)', paddingLeft: '0', paddingRight: '0'}">
+                        <p class=" card-el card-text tag-text" :style="{fontSize: '28rpx', color: 'rgb(255, 255, 255)'}">游</p>
+                      </div>
+                    </div>
+                    <div class=" card-ct card-div">
+                      <p class=" card-el card-text wxc-text margin-text">{{item.tag}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class=" card-ct card-div">
+                  <div class="wxc-rich-text card-ct card-div">
+                    <div class=" card-ct card-div">
+                      <div class=" card-ct card-div wxc-tag item-tag" :style="{borderColor: 'rgb(48, 160, 255)', backgroundColor: 'rgb(48, 160, 255)', paddingLeft: '0', paddingRight: '0'}">
+                        <p class=" card-el card-text tag-text" :style="{fontSize: '28rpx', color: 'rgb(255, 255, 255)'}">确</p>
+                      </div>
+                    </div>
+                    <div class=" card-ct card-div">
+                      <p class=" card-el card-text wxc-text margin-text">{{item.need_conf.text}}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="item-price card-ct card-div">
+                  <div class=" card-ct card-div">
+                    <p class="default-text card-el card-text"></p>
+                  </div>
+                  <div class="price-num card-ct card-div">
+                    <span>
+                      <p class="price card-el card-text">￥{{item.sale_price}}</p>
+                    </span>
+                    <span class="market-price">
+                      <del>￥{{item.cost_price}}</del>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </section>
       </div>
-  </div>
+    </scroll-view>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -100,15 +98,16 @@ export default {
       wx.navigateTo({
         url: '../../pages/detail/main?id=' + item.id
       })
+    },
+    loadMore () {
+      this.$emit('loadMore')
     }
   }
 }
 </script>
-<style lang='less' scoped>
-.card-list-wrap {
-  width: 100%;
-  .card-list-inner {
-    .card-list-container {
+<style lang='less'>
+
+  .card-list-container {
       .card-item {
         height: 3rem;
         -webkit-box-orient: horizontal;
@@ -231,10 +230,7 @@ export default {
           }
         }
       }
-    }
-  }
 }
-
 .card-ct {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -322,6 +318,7 @@ export default {
   width: 0.9rem;
   height: 0.24rem;
   margin-right: 0.06rem;
+  background-image: url('../../../static/img/icon/brand-card.png');
 }
 .wxc-tag {
   border-color: #3d3d3d;

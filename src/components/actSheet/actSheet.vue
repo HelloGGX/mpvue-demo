@@ -128,6 +128,7 @@ export default {
         })
       } else {
         this.$emit('confirm', {
+          id: this.info.id,
           title: this.info.title,
           adultNum: this.adultNum,
           childNum: this.childNum,

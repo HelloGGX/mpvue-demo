@@ -1,5 +1,7 @@
 import Fly from 'flyio/dist/npm/wx'
+import store from '../store/index'
 // import qs from 'qs'
+
 const fly = new Fly()
 
 // 定义公共headers
@@ -17,6 +19,7 @@ fly.interceptors.request.use(request => {
   request.headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
+
   // 终止请求
   // var err=new Error("xxx")
   // err.request=request
@@ -35,11 +38,28 @@ fly.interceptors.response.use(
         wx.hideLoading()
       }, 800)
     }
-    return Promise.resolve(response)
+    // 如果返回的状态码为200，说明接口请求成功，可以正常拿到数据
+    // 否则的话抛出错误
+    if (response.status === 200) {
+      Promise.resolve(response)
+      store.commit('SET_NET', true)
+    } else {
+      Promise.reject(response)
+    }
   },
-  function (error) {
-    // 对响应错误做点什么
-    return Promise.reject(error)
+  error => {
+    const { response } = error
+    if (response) {
+      // 请求已发出，但是不在2xx的范围
+      return Promise.reject(response)
+    } else {
+      // 处理断网的情况
+      // eg:请求超时或断网时，更新state的network状态
+      // network状态在app.vue中控制着一个全局的断网提示组件的显示隐藏
+      // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
+      wx.hideLoading()
+      store.commit('SET_NET', false)
+    }
   }
 )
 

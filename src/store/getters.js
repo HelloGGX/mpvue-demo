@@ -7,3 +7,4 @@ export const avatarUrl = state => state.avatarUrl
 export const canIUse = state => state.canIUse
 export const visible = state => state.visible
 export const authPhone = state => state.authPhone
+export const net = state => state.net

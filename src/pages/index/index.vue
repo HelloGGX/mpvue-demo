@@ -1,47 +1,61 @@
 <!-- 首页 -->
 <template>
-   <div>
+  <div>
     <section class="search-box-wrapper" @click='toSearch()'>
       <div class="search-bg opacity-black">
-        <img src='/static/img/bg/searchBg.jpg' alt="">
+        <!-- <img src='/static/img/bg/searchBg.png' alt=""> -->
       </div>
-      <search-box ref="searchBox" @query="onQueryChange" readOnly="true"  placeholder="搜索商家名、产品名或者路线" >
+      <search-box ref="searchBox" @query="onQueryChange" readOnly="true" placeholder="搜索商家名、产品名或者路线">
         <template slot="left">
           <div class="search-left">
-          <div class="addr"><span>成都</span><i class="iconfont icon-unfold"></i></div>
+            <div class="addr">
+              <span>成都</span>
+              <i class="iconfont icon-unfold"></i>
+            </div>
           </div>
         </template>
       </search-box>
     </section>
+    <section class="slider-wrapper">
+      <slide :imgUrls="imgUrls"></slide>
+    </section>
     <section class="main-wrapper">
-      <tab  v-model="tabItem">
-          <tab-item selected >自由行</tab-item>
-          <tab-item >跟团游</tab-item>
+
+      <tab v-model="tabItem">
+        <tab-item selected>自由行</tab-item>
+        <tab-item>跟团游</tab-item>
       </tab>
-      <div :style="{'height': getScrollHeigh+'px'}">
-        <swiper  class="slider-group tab-context"  @change="switchItem" :current ="tabItem" duration="200" circular="true" skip-hidden-item-layout="true">
-          <swiper-item><card v-if="getFreeGo"  :lists="freeGo"></card></swiper-item>
-          <swiper-item><card  v-if="getGroupGo" :lists="groupGo"></card></swiper-item>
-        </swiper>
-      </div>
+
+      <swiper class="slider-group tab-context" :style="{'height': height+'px'}" @change="switchItem" :current="tabItem" duration="200" circular="true" skip-hidden-item-layout="true">
+        <swiper-item>
+          <card v-if="getFreeGo" :lists="freeGo" @loadMore="more"></card>
+        </swiper-item>
+        <swiper-item>
+          <card v-if="getGroupGo" :lists="groupGo" @loadMore="more"></card>
+        </swiper-item>
+      </swiper>
+      <load-more :isHideLoadMore="getHideLoadMore" :isComplete="getComplete"></load-more>
     </section>
     <modal v-model="visible" modalTit="绑定手机号">
       <div slot="content">
-          <div>
-            <div class="bind-phone">
-              <button class="btn-phone" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"></button>
-              <i-button type="success" shape="circle">微信手机号一键绑定</i-button>
-            </div>
-            <div class="tip-txt"><p>绑定手机号代表同意《用户协议》和《隐私政策》</p></div>
-            <div class="tip-img">
-              <img src="/static/img/icon/phone.png" alt="">
-              <span>使用手机号绑定</span>
-            </div>
+        <div>
+          <div class="bind-phone">
+            <button class="btn-phone" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"></button>
+            <i-button type="success" shape="circle">微信手机号一键绑定</i-button>
           </div>
+          <div class="tip-txt">
+            <p>绑定手机号代表同意《用户协议》和《隐私政策》</p>
+          </div>
+          <div class="tip-img">
+            <img src="/static/img/icon/phone.png" alt="">
+            <span>使用手机号绑定</span>
+          </div>
+        </div>
       </div>
     </modal>
     <mptoast></mptoast>
-   </div>
+
+  </div>
 </template>
 
 <script type='text/ecmascript-6'>
@@ -49,10 +63,12 @@ import api from 'api/api'
 import SearchBox from 'components/search-box/search-box'
 import Tab from 'components/tab/tab'
 import TabItem from 'components/tab/tab-item'
+import Slide from 'base/slide/slide'
 import Card from 'components/card/card'
 import { mapGetters, mapMutations } from 'vuex'
 import Mptoast from 'mptoast'
 import Modal from 'components/modal/modal'
+import LoadMore from 'base/load-more/load-more'
 
 export default {
   components: {
@@ -61,7 +77,9 @@ export default {
     TabItem,
     Card,
     Modal,
-    Mptoast
+    Mptoast,
+    Slide,
+    LoadMore
   },
 
   data () {
@@ -70,17 +88,92 @@ export default {
       type: '1',
       freeGo: [],
       groupGo: [],
+      imgUrls: [],
+      freePage: 0, // 自由行页数
+      groupPage: 0, // 跟团游页数
+      isHideLoadMore: false,
+      isComplete: false,
+      height: 0,
       disabled:
         typeof navigator !== 'undefined' &&
         /iphone/i.test(navigator.userAgent) &&
         /ucbrowser/i.test(navigator.userAgent)
     }
   },
+  onLoad () {
+    wx.getSystemInfo({
+      // 获取页面可视区域的高度
+      success: res => {
+        this.height = res.screenHeight
+      }
+    })
+    wx.showShareMenu({
+      withShareTicket: true
+    })
+  },
+  onShareAppMessage () {
+    const _thi = this
+    return {
+      title: _thi.nickName + '向你分享了小程序',
+      path: `pages/index/main`,
+      success () {
+        // 转发成功
+        api
+          .getShareInfo({
+            openId: _thi.oid,
+            pageName: 'index'
+          })
+          .then(res => {
+            if (res.state === 'ok') {
+              return true
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+      fail (res) {
+        // 转发失败
+      }
+    }
+  },
+  onPullDownRefresh () {
+    // 下拉刷新重新获取数据
+    this.freePage = 0 // 自由行页数
+    this.groupPage = 0 // 跟团游页数
+    wx.showNavigationBarLoading() // 在标题栏中显示加载
+    api
+      .getIndexData({ type: this.type, page: 0 })
+      .then(res => {
+        this.imgUrls = res.imgUrls
+        this.type === '1'
+          ? (this.freeGo = res.lists)
+          : (this.groupGo = res.lists)
+        // complete
+        setTimeout(function () {
+          wx.hideNavigationBarLoading() // 完成停止加载
+          wx.stopPullDownRefresh() // 停止下拉刷新
+        }, 1000)
+      })
+      .catch(errMsg => {
+        console.log(errMsg)
+      })
+  },
   methods: {
     ...mapMutations({
       setVisible: 'SET_VISIBLE',
       setAuthPhone: 'SET_AUTHPHONE'
     }),
+    more () {
+      // 上拉加载更多
+      if (this.type === '1') {
+        this.freePage = this.freePage + 10
+        this.getIndex(this.type, this.freePage)
+      } else {
+        this.groupPage = this.groupPage + 10
+        this.getIndex(this.type, this.groupPage)
+      }
+    },
     toSearch () {
       wx.navigateTo({
         url: '../../pages/search/main'
@@ -109,29 +202,65 @@ export default {
           console.log(errMsg)
         })
     },
-
     init () {
-      this.getIndex(this.type)
+      this.getIndex(this.type, this.freePage)
     },
     switchItem (res) {
       let oIndex = res.mp.detail.current
       this.tabItem = oIndex
-      this.onItemClick(oIndex)
+      this.$nextTick(() => {
+        this.onItemClick(oIndex)
+      })
     },
     onItemClick (index) {
       this.tabItem = index // 获取选项卡索引
-      index === 0 ? (this.type = '1') : (this.type = '2')
-
-      this.getIndex(this.type)
+      if (index === 0) {
+        this.type = '1'
+        if (this.freeGo.length === 0) {
+          this.getIndex(this.type, this.freePage)
+        }
+      } else {
+        this.type = '2'
+        if (this.groupGo.length === 0) {
+          this.getIndex(this.type, this.groupPage)
+        }
+      }
     },
-    async getIndex (type) {
+    async getIndex (type, page) {
       try {
         await api
-          .getIndexData({ type: type })
+          .getIndexData({ type: type, page: page })
           .then(res => {
-            type === '1'
-              ? (this.freeGo = res.lists)
-              : (this.groupGo = res.lists)
+            this.imgUrls = res.imgUrls
+            if (type === '1') {
+              if (res.lists === null) {
+                setTimeout(() => {
+                  this.isComplete = true
+                }, 800)
+              } else {
+                const len = res.lists.length
+                for (let i = 0; i < len; i++) {
+                  this.freeGo.push(res.lists[i])
+                }
+                this.isComplete = false
+              }
+            } else if (type === '2') {
+              if (res.lists === null) {
+                setTimeout(() => {
+                  this.isComplete = true
+                }, 800)
+              } else {
+                const len = res.lists.length
+                for (let i = 0; i < len; i++) {
+                  this.groupGo.push(res.lists[i])
+                }
+                this.isComplete = false
+              }
+            }
+            this.isHideLoadMore = false
+            setTimeout(() => {
+              this.isHideLoadMore = true
+            }, 800)
           })
           .catch(errMsg => {
             console.log(errMsg)
@@ -141,22 +270,30 @@ export default {
       }
     }
   },
+  beforeMount () {
+    this.freePage = 0 // 自由行页数
+    this.groupPage = 0 // 跟团游页数
+    this.freeGo = []
+    this.groupGo = []
+  },
   mounted () {
     this.init()
     this.setVisible(!this.authPhone)
   },
   computed: {
-    ...mapGetters(['visible', 'canIUse', 'oid', 'authPhone']),
+    ...mapGetters(['visible', 'canIUse', 'oid', 'authPhone', 'nickName']),
     getFreeGo () {
       return this.freeGo.length > 0
     },
     getGroupGo () {
       return this.groupGo.length > 0
     },
-    getScrollHeigh () {
-      return this.type === '1'
-        ? this.freeGo.length * 150
-        : this.groupGo.length * 150
+
+    getHideLoadMore () {
+      return this.isHideLoadMore
+    },
+    getComplete () {
+      return this.isComplete
     }
   },
   watch: {
@@ -169,6 +306,16 @@ export default {
 
 <style scoped lang="less">
 @import '~common/less/variable';
+
+swiper {
+  display: flex;
+  height: 100%;
+}
+swiper-item {
+  height: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
+}
 .sticky-item {
   height: 44px;
   .i-sticky-title {
@@ -182,6 +329,7 @@ export default {
     height: 1.26rem;
     width: 100%;
     z-index: -1;
+    background-color: #ffdc2a;
     img {
       width: 100%;
       height: 100%;
@@ -197,7 +345,7 @@ export default {
     .addr {
       display: flex;
       line-height: 44px;
-      color: #ffffff;
+      color: #000;
       text-align: center;
       span {
         flex: 2;
@@ -218,5 +366,15 @@ export default {
     border: 1rpx solid #ebebeb;
     box-sizing: border-box;
   }
+}
+.mod-tabs {
+  position: -webkit-sticky;
+  position: -moz-sticky;
+  position: -ms-sticky;
+  position: sticky;
+  top: 0;
+  height: 45px;
+  background: #fff;
+  z-index: 1;
 }
 </style>

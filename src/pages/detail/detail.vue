@@ -2,22 +2,25 @@
 <template>
   <scroll-view style="height:calc(100vh);" @scroll="scroll" :scroll-into-view="toView" scroll-y="true" scroll-with-animation="true">
     <div class="goods-container">
-      <div id="banner" class="goods-banner" :style="{ height:bannerHeight+'rpx', backgroundImage:'url(' + goodInfo.image_url + ')'}"></div>
+      <div id="banner" class="goods-banner" :style="{ height:bannerHeight+'rpx', backgroundImage:'url(' + goodInfo.image_url + ')'}" :data-src="goodInfo.image_url" @click="previewImage"></div>
       <div class="good-list">
         <div class="goods-wrapper">
           <div class="mod-price">
             <div class="price-area main-price-area">
               <span class="price-str">
                 <span class="yen">￥</span>
-              <span class="price-int">{{getShowPrice}}</span></span>
+                <span class="price-int">{{getShowPrice}}</span>
+              </span>
               <span class="extra">
-                <span class="orange-tag">超值优惠</span></span>
+                <span class="orange-tag">超值优惠</span>
+              </span>
             </div>
             <div class="price-area">
               <span class="preprice-text">价格</span>
               <span class="price-str">
                 <span class="yen">￥</span>
-              <span class="price-int">{{goodInfo.cost_price}}</span></span>
+                <span class="price-int">{{goodInfo.cost_price}}</span>
+              </span>
             </div>
           </div>
           <div class="mod-title">
@@ -26,12 +29,12 @@
               <div class="left"></div>
               <div class="right">
                 <i class="iconfont icon-share"></i>
-                <div class="text">分享</div>
+                <button class="text" open-type="share">分享</button>
               </div>
             </div>
           </div>
           <div class="mod-sold">
-            <div class="content">阅读量2000</div>
+            <div class="content">阅读量{{goodInfo.page_view}}</div>
           </div>
           <div class="mod-brand">
             <div class="brand-box cell-arrow">
@@ -47,7 +50,7 @@
                 </div>
                 <div class="service-wrap">
                   <img class="icon" src="/static/img/icon/check-icon.png">
-                  <span class="tag-title" style="color:#666666;">(使用花呗) 先游后付</span>
+                  <span class="tag-title" style="color:#666666;">优质服务</span>
                 </div>
               </div>
             </div>
@@ -57,10 +60,10 @@
               <div class="label">服务</div>
               <div class="infos-container">
                 <div class="info">
-                  <img class="item-icon" src="/static/img/icon/confirm-icon.png">
+                  <img class="item-icon" :src="getConfirmIcon">
                 </div>
                 <div class="info">
-                  <div class="item-text">卖家承诺此商品拍下付款后即可按期顺利出行，无需等待确认</div>
+                  <div class="item-text">{{getGoodType}}</div>
                 </div>
               </div>
             </div>
@@ -72,21 +75,21 @@
             </div>
             <calendar :prices="getprice" v-on:choseDay="clickDay"></calendar>
           </div>
-          <div class="mod-tabs">
-            <tab v-model="tabItem">
-              <tab-item selected @on-item-click="onItemClick">商品详情</tab-item>
-              <tab-item @on-item-click="onItemClick">费用说明</tab-item>
-              <tab-item @on-item-click="onItemClick">线路详情</tab-item>
-            </tab>
-          </div>
+
+          <tab v-model="tabItem">
+            <tab-item selected @on-item-click="onItemClick">商品详情</tab-item>
+            <tab-item @on-item-click="onItemClick">费用说明</tab-item>
+            <tab-item @on-item-click="onItemClick">线路详情</tab-item>
+          </tab>
+
           <div class="tabs-container">
             <div class="mod-tuwen">
               <div class="w-title md-tit" id="tuwen">
                 <div class="wt-title">图文介绍</div>
               </div>
               <div class="w-content">
-                <div v-for="(item,index) in goodInfo.image_arr" :key="index">
-                  <img lazy-load mode='widthFix' :src="item" alt="">
+                <div v-for="(item,index) in getImgArr" :key="index" class="item-img">
+                  <img mode='widthFix' :src="[item.show==='true'? item.src : '/static/img/bg/default.png']" :class="[item.show==='true'? 'img-active' : '','img-lazy']">
                 </div>
               </div>
             </div>
@@ -102,9 +105,15 @@
                         <ul class="tabview-tabs-wrap">
                           <li class="tabview-tab tabview-selected">
                             <div class="tabview-tab-title">
-                              <div class="product-item active">
+                              <!-- <div class="product-item active">
                                 <span>成都直飞</span>
+                              </div> -->
+                              <div class="product-item active" @click="toHotel(goodInfo.hotel)">
+                                <span>查看酒店</span>
                               </div>
+                              <!-- <div class="product-item active" @click="downloadFile(goodInfo.pdf)">
+                                <span>点击下载word行程</span>
+                              </div> -->
                             </div>
                           </li>
                         </ul>
@@ -121,20 +130,8 @@
                       <div class="item-wrap ">
                         <div class="item ">
                           <div class="item-cnt">
-                            <p>
-                              1：广州往返巴厘岛经济舱机票含税
-                            </p>
-                            <p>
-                              2：行程所列酒店四晚，两人一间，含早餐
-                            </p>
-                            <p>
-                              3：行程所列 正餐
-                            </p>
-                            <p>
-                              4：巴厘岛当地司机及中文导游服务
-                            </p>
-                            <p>
-                              5：行程所列景点门票
+                            <p v-for="(item,index) in goodInfo.price_include" :key="index">
+                              {{item}}
                             </p>
                           </div>
                         </div>
@@ -153,14 +150,8 @@
                       <div class="item-wrap ">
                         <div class="item ">
                           <div class="item-cnt">
-                            <p>
-                              1：印尼专属导游司机服务费600元/人（不同出发日期，行程、天数不同，杂费不同，详情咨询客服）。
-                            </p>
-                            <p>
-                              2：除行程表所列之外的个人消费，超重行李，航空及个人意外保险。
-                            </p>
-                            <p>
-                              3：如果单人出行所产生的单房差费用。
+                            <p v-for="(item,index) in goodInfo.price_exclude" :key="index">
+                              {{item}}
                             </p>
                           </div>
                         </div>
@@ -179,8 +170,8 @@
                       <div class="item-wrap ">
                         <div class="item ">
                           <div class="item-cnt">
-                            <p>
-                              无自费
+                            <p v-for="(item,index) in goodInfo.self_expense" :key="index">
+                              {{item}}
                             </p>
                           </div>
                         </div>
@@ -195,52 +186,16 @@
                     </div>
                   </div>
                   <div class="cnt">
-                    <div class="content">
+                    <div class="content" :style="{maxHeight: getMore}">
                       <div class="item">
                         <div class="item-cnt">
-                          <p>
-                            温馨提示：近期出现多起诈骗事件，防止上当受骗，切莫将团款转给私人账户（微信/支付宝或其他个人渠道）；
-                          </p>
-                          <p>
-                            1.由于此产品为特价，库存需要二次确认，您也可以选择其他日期拍下付款，实际出发日期以于客服咨询即旅游确认单日期为准，请您知晓。
-                          </p>
-                          <p>
-                            2.由于属全球订房，房态时时查询为准，在此说明：如在您交付全款后，未预订成功，我司可为您全额退款或帮您推荐其它同级酒店住宿。
-                          </p>
-                          <p>
-                            3.报价按2人入住1间房核算，如出现单男单女，请补齐单房差以享用单人房间；部分产品价格仅支持持中国护照客人，其他国籍护照，请联系客服确认价格，
-                          </p>
-                          <p>
-                            4.旅客在出发前机票退改，根据航司客规收取其违约费用（团队机票一经确认，不退不改），另飞行时间以当日实际使用时间为准；
-                          </p>
-                          <p>
-                            5.出发通知最晚于出团前1个工作日发送，若能提前确定，我们将会第一时间通知您。
-                          </p>
-                          <p>
-                            6.付款预订成功不接受退改，请务必先确认再付款
-                          </p>
-                          <p>
-                            7.巴厘岛21岁以下均按小童核算，价格请咨询客服。
-                          </p>
-                          <p>
-                            8.关于发票邮寄安排，我司安排挂号信方式邮寄，如需快递，快递费用需客人自理。
-                          </p>
-                          <p>
-                            9.禁止销售给孕妇，如有客人蓄意隐瞒怀孕情况，如在机场一经发现，我司将拒绝该客人办理登机牌及登机，且所收费一概不退；如被移民局发现，亦会被即使遣返回国，由此所引起的一切费用（包括及并不限于旅游团费/机票费及遣返的机票费用）及法律责任，均由该旅客全部承担。
-                          </p>
-                          <p>
-                            温馨提醒：请确保护照有效期，从出行时间开始计算，在6个月以上哦。
-                          </p>
-                          <p>
-                            ★由于位置紧张，下单前请和客服核实位置情况及意向团期价格，如未和客服核实引起的投诉，本店概不处理。
-                          </p>
-                          <p>
-                            **本产品线上线下同步销售，请淘宝用户在付款前务必联系客服，核实及确认机位和酒店问题，否则因为未咨询而二次确认失败导致产生的投诉，按照飞猪规则，一律不进行赔付.
+                          <p v-for="(item,index) in goodInfo.notice" :key="index">
+                            {{item}}
                           </p>
                         </div>
                       </div>
                     </div>
-                    <div class="see-more">
+                    <div class="see-more" @click="seeMore()">
                       <div class="text">
                         查看更多
                       </div>
@@ -259,33 +214,18 @@
               <div class="cnt">
                 <div>
                   <div class="cell">
-                    <div class="title">
+                    <!-- <div class="title">
                       江泰保险
-                    </div>
+                    </div> -->
                     <ul class="content-wrap">
-                      <li class="content">
-                        意外身故、伤残，保额10万元
-                      </li>
-                      <li class="content">
-                        高风险运动意外伤害，保额2.5万元
-                      </li>
-                      <li class="content">
-                        意外医疗，保额2万元
-                      </li>
-                      <li class="content">
-                        意外及急性病医疗费用垫付，保额500元
-                      </li>
-                      <li class="content">
-                        紧急医疗运送和送返，保额500元
-                      </li>
-                      <li class="content">
-                        旅程延误，保额500元
+                      <li class="content" v-for="(item,index) in goodInfo.insurance" :key="index">
+                        {{item}}
                       </li>
                     </ul>
                   </div>
                 </div>
                 <div class="note-wrap">
-                  飞猪温馨提示：以上为商家赠送保险的基础保障信息，您可以在出行前查看保单详情，如需增加保额和内容，可在下单页选择定制保险购买。
+                  温馨提示：以上为商家赠送保险的基础保障信息，您可以在出行前查看保单详情，如需增加保额和内容，可在下单页选择定制保险购买。
                 </div>
               </div>
             </div>
@@ -294,7 +234,9 @@
                 <div class="wt-title">线路详情</div>
               </div>
               <div class="w-content">
-  
+                <p v-if="goodInfo.hotel==='' && goodInfo.pdf===''" style="text-align:center">无相关资源</p>
+                <i-button type="success" shape="circle" v-if="goodInfo.hotel!==''" @click="toHotel(goodInfo.hotel)">点击查看酒店详情</i-button>
+                <i-button type="success" shape="circle" v-if="goodInfo.pdf!==''" @click="downloadFile(goodInfo.pdf)">点击下载PDF行程</i-button>
               </div>
             </div>
           </div>
@@ -316,12 +258,14 @@
                     </div>
                   </div>
                   <div class="collect-wrap">
-                    <div class="collect">
-                      <i class="iconfont icon-collection"></i>
-                      <div class="text">收藏</div>
+                    <div class="collect" @click="toHome()">
+                      <i class="iconfont icon-homepage"></i>
+                      <div class="text">首页</div>
                     </div>
                   </div>
-                  <div class="buy normal" @click="buy()">立即购买 <span>{{price}}</span></div>
+                  <div class="buy normal" @click="buy()">立即购买
+                    <span>{{price}}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -336,29 +280,32 @@
     <scroll-top v-model="offsetTop" @scrollToTop="scrollToTop"></scroll-top>
     <modal v-model="visible" modalTit="绑定手机号">
       <div slot="content">
-          <div>
-            <div class="bind-phone">
-              <button class="btn-phone" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"></button>
-              <i-button type="success" shape="circle">微信手机号一键绑定</i-button>
-            </div>
-            <div class="tip-txt"><p>绑定手机号代表同意《用户协议》和《隐私政策》</p></div>
-            <div class="tip-img">
-              <img src="/static/img/icon/phone.png" alt="">
-              <span>使用手机号绑定</span>
-            </div>
+        <div>
+          <div class="bind-phone">
+            <button class="btn-phone" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"></button>
+            <i-button type="success" shape="circle">微信手机号一键绑定</i-button>
           </div>
+          <div class="tip-txt">
+            <p>绑定手机号代表同意《用户协议》和《隐私政策》</p>
+          </div>
+          <div class="tip-img">
+            <img src="/static/img/icon/phone.png" alt="">
+            <span>使用手机号绑定</span>
+          </div>
+        </div>
       </div>
     </modal>
-  </scroll-view>
-</template>
 
+  </scroll-view>
+
+</template>
 <script type='text/ecmascript-6'>
 import api from 'api/api'
 import Calendar from 'base/calendar/calendar.vue'
 import Tab from 'components/tab/tab'
 import TabItem from 'components/tab/tab-item'
 import ScrollTop from 'base/scroll-top/scroll-top'
-import { throttle, isIphoneX, changeDate, del$ } from 'utils/tools'
+import { debounce, throttle, isIphoneX, changeDate, del$ } from 'utils/tools'
 import { mapGetters, mapMutations } from 'vuex'
 import Mptoast from 'mptoast'
 import Modal from 'components/modal/modal'
@@ -367,16 +314,22 @@ import ActSheet from 'components/actSheet/actSheet'
 export default {
   data () {
     return {
+      height: '', // 获取当前页面的可视高度
       bannerH: 0,
       goodid: '',
       goodInfo: {},
+      imgGroup: [],
       allPrice: [],
+      dateId: '',
       tabItem: 0,
       toView: '',
       offsetTop: 0,
       price: '', // 成人价
       selectDay: '',
-      bottomVisible: false // 底部弹出层显示与否
+      more: false, // 费用须知查看更多状态
+      bottomVisible: false, // 底部弹出层显示与否
+      good_type: '1',
+      good_text: ''
     }
   },
   components: {
@@ -389,20 +342,136 @@ export default {
     Modal
   },
   onShareAppMessage: function (res) {
-    console.log(res)
+    const _thi = this
     return {
-      title: this.goodInfo.title,
-      path: 'pages/detail/main?id=123'
+      title: _thi.goodInfo.title,
+      path: `pages/detail/main?id=${_thi.goodInfo.id}`,
+      success (res) {
+        // 转发成功
+        api
+          .getShareInfo({
+            openId: _thi.oid,
+            pageName: 'detail',
+            goodId: _thi.goodInfo.id
+          })
+          .then(res => {
+            if (res.state === 'ok') {
+              return true
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+      fail: function (res) {
+        // 转发失败
+      }
     }
   },
-  onLoad () {
+
+  onLoad (options) {
+    wx.getSystemInfo({
+      // 获取页面可视区域的高度
+      success: res => {
+        this.height = res.screenHeight
+      }
+    })
     this.toView = ''
+    this.goodid = this.$root.$mp.query.id
+    this.selectDay = ''
+    this._getDetail()
+  },
+  mounted () {
+    setTimeout(() => {
+      this.getBannerHeight()
+    }, 20)
+  },
+  onShow () {
+    this.showImg()
   },
   methods: {
     ...mapMutations({
       setVisible: 'SET_VISIBLE',
       setAuthPhone: 'SET_AUTHPHONE'
     }),
+    async _getDetail () {
+      // 异步获取该页所有数据
+      let _thi = this
+      try {
+        await api
+          .getDetailData({
+            id: this.goodid
+          })
+          .then(res => {
+            this.goodInfo = res.lists[0]
+            this.price = `￥${this.goodInfo.sale_price}`
+            _thi.allPrice = res.lists2
+            this.good_type = this.goodInfo.need_conf.good_type
+            this.good_text = this.goodInfo.need_conf.text
+            // this.setAsyncData(res.lists2)
+            wx.setNavigationBarTitle({
+              title: this.goodInfo.title
+            })
+          })
+          .catch(errMsg => {
+            console.log(errMsg)
+          })
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    toHotel (v) {
+      wx.navigateTo({ url: `../web-view/main?src=${v}` })
+    },
+    toHome () {
+      wx.reLaunch({ url: '../index/main' })
+    },
+    downloadFile (v) {
+      wx.downloadFile({
+        url: v,
+        success (res) {
+          if (res.statusCode === 200) {
+            const filePath = res.tempFilePath
+            wx.openDocument({
+              filePath: filePath,
+              success: res => {
+                this.$mptoast({
+                  text: '打开文档成功',
+                  icon: 'success',
+                  duration: 1000
+                })
+              },
+              fail: err => {
+                console.log(err)
+              }
+            })
+          }
+        },
+        fail (err) {
+          console.log(err)
+        }
+      })
+    },
+    seeMore () {
+      // 预订须知查看更多
+      this.more = !this.more
+    },
+    showImg () {
+      // 判断高度是否需要加载
+      wx
+        .createSelectorQuery()
+        .selectAll('.item-img')
+        .boundingClientRect(ret => {
+          this.imgGroup = this.goodInfo.image_arr
+          const height = this.height
+          ret.forEach((item, index) => {
+            if (item.top < height) {
+              this.imgGroup[index].show = 'true'
+            }
+          })
+        })
+        .exec()
+    },
     getPhoneNumber (e) {
       api
         .postPhoneNum({
@@ -425,13 +494,30 @@ export default {
           console.log(errMsg)
         })
     },
+    previewImage (e) {
+      // 点击页头预览大图
+      this.$nextTick(() => {
+        let current = e.target.dataset.src
+        let imgArr = []
+        for (let item of this.goodInfo.image_arr) {
+          imgArr.push(item.src)
+        }
+        imgArr.unshift(current)
+        wx.previewImage({
+          current: current,
+          urls: imgArr
+        })
+      })
+    },
     buyConfirm (v) {
+      // 点击购买确认按钮并跳转页面
+      this.bottomVisible = false
       wx.navigateTo({
-        url: `../trip-buy/main?id=1&title=${v.title}&adultNum=${
+        url: `../trip-buy/main?id=${v.id}&title=${v.title}&adultNum=${
           v.adultNum
         }&childNum=${v.childNum}&adultPrice=${v.adultPrice}&childPrice=${
           v.childPrice
-        }&totalPrice=${v}&date=${this.selectDay}`
+        }&totalPrice=${v}&date=${this.selectDay}&dateId=${this.dateId}`
       })
     },
     buy () {
@@ -481,6 +567,7 @@ export default {
       // 滚动回调
       this.offsetTop = e.mp.detail.scrollTop
       this.toView = ''
+      debounce(this.showImg())
       throttle(this.jugeTab(), 0)
     },
     onItemClick (i) {
@@ -504,43 +591,22 @@ export default {
         api
           .postGoodId({ id: data.id })
           .then(res => {
-            for (let i = 0; i < res.lists.length; i++) {
-              if (res.lists[i].name === '儿童') {
-                this.goodInfo.child_price = res.lists[i].price_xs
-              }
-            }
             if (res.state === 'ok') {
+              this.goodInfo.child_price = res.lists[0].et_price
             }
           })
-          .catch(errMsg => {})
+          .catch(errMsg => {
+            this.$mptoast({
+              text: errMsg,
+              icon: 'error',
+              duration: 2000
+            })
+          })
+        this.dateId = data.id
         this.price = data.price
         this.goodInfo.sale_price = del$(data.price)
       }
       this.selectDay = changeDate(data.time)
-    },
-    async _getDetail () {
-      // 异步回去该页所有数据
-      let _thi = this
-      try {
-        await api
-          .getDetailData({
-            id: this.goodid
-          })
-          .then(res => {
-            this.goodInfo = res.lists[0]
-            this.price = `￥${this.goodInfo.sale_price}`
-            _thi.allPrice = res.lists2
-            // this.setAsyncData(res.lists2)
-            wx.setNavigationBarTitle({
-              title: this.goodInfo.title
-            })
-          })
-          .catch(errMsg => {
-            console.log(errMsg)
-          })
-      } catch (e) {
-        console.log(e)
-      }
     },
     getBannerHeight () {
       // 根据页面宽度设置banner高度
@@ -553,16 +619,10 @@ export default {
         .exec()
     }
   },
-  mounted () {
-    this.goodid = this.$root.$mp.query.id
-    this.selectDay = ''
-    this.getBannerHeight()
-    this._getDetail()
-  },
   computed: {
-    ...mapGetters(['visible', 'authPhone']),
+    ...mapGetters(['visible', 'authPhone', 'oid']),
     getShowPrice () {
-      return del$(this.goodInfo.sale_price)
+      return this.goodInfo.sale_price
     },
     jugeX () {
       // 判断是否为iphoneX
@@ -578,6 +638,18 @@ export default {
     },
     getprice () {
       return this.allPrice
+    },
+    getImgArr () {
+      return this.imgGroup
+    },
+    getMore () {
+      return this.more ? '100%' : '308rpx'
+    },
+    getConfirmIcon () {
+      return `/static/img/icon/confirm-ico${this.good_type}.png`
+    },
+    getGoodType () {
+      return this.good_text
     }
   },
   watch: {
@@ -753,6 +825,9 @@ export default {
       .text {
         margin-bottom: 0.09rem;
         font-size: 0.24rem;
+        &:after {
+          border: none;
+        }
       }
     }
   }
@@ -939,7 +1014,7 @@ export default {
   top: 0;
   height: 45px;
   background: #fff;
-  z-index: 9;
+  z-index: 1;
 }
 
 .tabs-container {
@@ -1052,6 +1127,7 @@ export default {
         -moz-justify-content: center;
         justify-content: center;
         font-weight: 400;
+        flex: 1;
         &.active {
           background-image: linear-gradient(90deg, #fce41d, #ffc503);
           border: none;
@@ -1118,7 +1194,7 @@ export default {
   .tabview-tab-title {
     position: relative;
     text-align: center;
-    display: inline-block;
+    display: flex;
     font-size: 0.28rem;
   }
 }
@@ -1126,7 +1202,7 @@ export default {
 .mod-buybanner-wrap {
   .mod-buybanner {
     position: fixed;
-    z-index: 10;
+    z-index: 99;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -1341,5 +1417,8 @@ export default {
       list-style-type: disc;
     }
   }
+}
+.mod-pdf {
+  padding-bottom: 1.76rem;
 }
 </style>

@@ -13,24 +13,24 @@
       </div>
       <div class="line"></div>
       <div class="weui-cells weui-cells_after-title">
-        <picker-select  title="成人数" :array="peopleNum" @select="selectAdult"></picker-select>
+        <picker-select title="成人数" :array="peopleNum" @select="selectAdult"></picker-select>
         <input v-show="false" type="text" name="child" :value="adultNum">
-        <picker-select  title="儿童数" :array="peopleNum" @select="selectChild"></picker-select>
+        <picker-select title="儿童数" :array="peopleNum" @select="selectChild"></picker-select>
         <input v-show="false" type="text" name="adult" :value="childNum">
       </div>
       <div class="line"></div>
       <div class="weui-cells weui-cells_after-title">
-        <picker-select  title="行程类型" :array="tripType" @select="selectType"></picker-select>
+        <picker-select title="行程类型" :array="tripType" @select="selectType"></picker-select>
         <input v-show="false" type="text" name="tripType" :value="trip">
         <div class="weui-cell weui-cell_input">
           <div class="weui-cell__hd">
             <div class="weui-label">目的地</div>
           </div>
           <div class="weui-cell__bd">
-            <input type="text" name="addr" class="weui-input addr"  placeholder="请输入目的地" >
+            <input type="text" name="addr" v-model="addr" class="weui-input addr" placeholder="请输入目的地">
           </div>
         </div>
-        <picker-select  title="预期花费" :array="priceNum" @select="selectPrice"></picker-select>
+        <picker-select title="预期花费" :array="priceNum" @select="selectPrice"></picker-select>
         <input v-show="false" type="text" name="price" :value="price">
       </div>
       <view class="btn-submit">
@@ -41,17 +41,19 @@
     <mptoast></mptoast>
     <modal v-model="visible" modalTit="绑定手机号">
       <div slot="content">
-          <div>
-            <div class="bind-phone">
-              <button class="btn-phone" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"></button>
-              <i-button type="success" shape="circle">微信手机号一键绑定</i-button>
-            </div>
-            <div class="tip-txt"><p>绑定手机号代表同意《用户协议》和《隐私政策》</p></div>
-            <div class="tip-img">
-              <img src="/static/img/icon/phone.png" alt="">
-              <span>使用手机号绑定</span>
-            </div>
+        <div>
+          <div class="bind-phone">
+            <button class="btn-phone" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber"></button>
+            <i-button type="success" shape="circle">微信手机号一键绑定</i-button>
           </div>
+          <div class="tip-txt">
+            <p>绑定手机号代表同意《用户协议》和《隐私政策》</p>
+          </div>
+          <div class="tip-img">
+            <img src="/static/img/icon/phone.png" alt="">
+            <span>使用手机号绑定</span>
+          </div>
+        </div>
       </div>
     </modal>
   </div>
@@ -83,12 +85,45 @@ export default {
       endTime: null,
       adultNum: 0,
       childNum: 0,
-      price: 0
+      price: 0,
+      addr: ''
+    }
+  },
+  onLoad () {
+    wx.showShareMenu({
+      withShareTicket: true
+    })
+  },
+  onShareAppMessage (res) {
+    const _thi = this
+    return {
+      title: _thi.nickName + '向你分享了小程序',
+      path: `pages/appt/main`,
+      success () {
+        // 转发成功
+        api
+          .getShareInfo({
+            openId: _thi.oid,
+            pageName: 'appt'
+          })
+          .then(res => {
+            if (res.state === 'ok') {
+              return true
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      },
+      fail (res) {
+        // 转发失败
+      }
     }
   },
   computed: {
     ...mapGetters(['nickName', 'canIUse', 'oid', 'authPhone', 'visible'])
   },
+
   methods: {
     ...mapMutations({
       setVisible: 'SET_VISIBLE',
@@ -111,6 +146,8 @@ export default {
               duration: 3000
             })
             this.setAuthPhone(true) // 把授权状态改为true
+          } else {
+            this.setAuthPhone(false) // 把授权状态改为true
           }
         })
         .catch(errMsg => {
@@ -127,6 +164,20 @@ export default {
         })
       } else if (!this.authPhone) {
         this.setVisible(!this.authPhone)
+      } else if (
+        new Date(this.startTime).getTime() >= new Date(this.endTime).getTime()
+      ) {
+        this.$mptoast({
+          text: '开始日期不能大于等于结束日期',
+          icon: 'info',
+          duration: 1000
+        })
+      } else if (this.addr === '') {
+        this.$mptoast({
+          text: '请输入你想要去的地方',
+          icon: 'info',
+          duration: 1000
+        })
       } else {
         // 如果已经授权
         api

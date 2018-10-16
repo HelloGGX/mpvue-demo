@@ -196,12 +196,23 @@ swiper {
   flex-direction: column;
 }
 
-.overlay {
-  position: fixed;
-  z-index: 8999;
-  top: -100px;
+.page {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  position: absolute;
+  top: 0;
+  bottom: 0;
   left: 0;
-  bottom: -100px;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  margin: 0;
+}
+
+.img-lazy {
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.img-active {
+  opacity: 1;
 }

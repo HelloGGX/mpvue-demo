@@ -5,7 +5,7 @@
     <slot name="left" ></slot>
     <div class="search-box">
         <i class="iconfont icon-search"></i>
-        <input ref="query" type="text" v-model="query" :disabled="readOnly" class="box"  :placeholder="placeholder"/>
+        <input ref="query" type="text" v-model="query" :disabled="readOnly" class="box" @focus="focus"  :placeholder="placeholder"/>
         <i @click="clear" v-show="query" class="iconfont icon-close"></i>
     </div>
     <slot name="right" ></slot>
@@ -43,23 +43,30 @@ export default {
     blur () {
       this.$refs.query.blur()
     },
+    focus (e) {
+      this.$emit('focus', e)
+    },
     search () {
-      api
-        .getKeyData({
-          keyword: this.query
-        })
-        .then(res => {
-          if (res.state === 'ok') {
-            this.result = res.result
-            this.$emit('result', this.result)
-          }
-        })
-        .catch(errMsg => {
-          console.log(errMsg)
-        })
+      if (this.query === '') {
+        this.$emit('result', '')
+      } else {
+        api
+          .getKeyData({
+            key: this.query
+          })
+          .then(res => {
+            if (res.state === 'ok') {
+              this.result = res.result || []
+              this.$emit('result', this.result)
+            }
+          })
+          .catch(errMsg => {
+            console.log(errMsg)
+          })
+      }
     }
   },
-  created () {
+  mounted () {
     this.debouncedGetResult = debounce(this.search, 500)
   },
   watch: {

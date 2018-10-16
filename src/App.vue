@@ -3,14 +3,26 @@ import api from 'api/api'
 import { mapMutations, mapGetters } from 'vuex'
 
 export default {
+  created () {
+    if (!this.net) {
+      this.network()
+    }
+  },
   mounted () {
     this.checkLogin()
   },
   computed: {
-    ...mapGetters(['canIUse', 'visible', 'oid'])
+    ...mapGetters(['canIUse', 'visible', 'oid', 'net'])
   },
-
   methods: {
+    network () {
+      // 如果没网
+      wx.showModal({
+        title: '网络提示',
+        content: '目前网络连接较慢，请尝试下拉刷新页面',
+        showCancel: false
+      })
+    },
     authInfo () {
       // 判断是否授权用户信息
       wx.getSetting({
@@ -25,7 +37,6 @@ export default {
             .checkUser({ oid: this.oid })
             .then(res => {
               // 后台校验数据完整性
-              console.log(res)
               if (res.state === 'ok') {
                 this.setAuthPhone(res.authPhone)
                 this.setVisible(false)
@@ -64,6 +75,7 @@ export default {
         success: res => {
           console.log('处于登录态')
           this.authInfo() // 授权用户信息
+          // this.login() // 调试用
           // this.getUserInfo() // 后台校验获取用户数据
         },
         fail: res => {
@@ -110,16 +122,16 @@ export default {
       setVisible: 'SET_VISIBLE',
       setAuthPhone: 'SET_AUTHPHONE'
     })
+  },
+  watch: {
+    net (newVal) {
+      setTimeout(() => {
+        if (!newVal) {
+          this.network()
+        }
+      }, 20)
+    }
   }
-  // watch: {
-  //   canIUse (newVal) {
-  //     setTimeout(() => {
-  //       if (newVal) { // 如果未授权
-
-  //       }
-  //     }, 20)
-  //   }
-  // }
 }
 </script>
 <style lang='less'  scoped>

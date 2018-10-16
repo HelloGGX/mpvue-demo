@@ -6,7 +6,8 @@ const state = {
   avatarUrl: '', // 用户的头像
   canIUse: false, // 是否授权(默认已授权)
   visible: false, // 根据是否授权展示模态框
-  authPhone: false // 是否授权手机号
+  authPhone: false, // 是否授权手机号
+  net: true // 默认联网
 }
 
 export default state

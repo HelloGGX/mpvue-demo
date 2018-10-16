@@ -6,6 +6,9 @@ app.$mount()
 
 export default {
   config: {
-    navigationBarTitleText: '我的订单'
+    navigationBarTitleText: '我的订单',
+    usingComponents: {
+      'i-modal': '../../../static/iview/modal/index'
+    }
   }
 }
